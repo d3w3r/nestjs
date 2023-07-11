@@ -13,3 +13,9 @@
 ## Commands for Nestjs-cli
 
 - To initialize a new project `nest new project`.
+
+## About using NestJS
+
+- When we are definig routes in nestjs doesn't matter if the route that i
+  specify has a starting slash or final slash all the routes omit the starting
+  and the trailing slash for example `/tools/` is the same as `tools`.
