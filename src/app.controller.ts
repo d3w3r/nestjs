@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -26,6 +26,26 @@ export class AppController {
     const message: string =
       'Hello welcome to this api,' +
       ' this endpoint start and ends with slashes';
+
+    return message;
+  }
+
+  @Get('products')
+  getProducts(
+    @Query('limit') limit = 100,
+    @Query('offset') offset = 0,
+    @Query('brand') brand: string,
+  ) {
+    // getProducts(@Query() params: any) {
+    //   const { limit, offset } = params;
+    const message: string = `products | limit = ${limit} offset = ${offset} brand = ${brand}`;
+
+    return message;
+  }
+
+  @Get('products/filter')
+  getProductFilter() {
+    const message: string = `This is a filter!`;
 
     return message;
   }
