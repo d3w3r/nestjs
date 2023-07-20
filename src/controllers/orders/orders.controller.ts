@@ -11,14 +11,14 @@ export class OrdersController {
   ) {
     const message: string = `All orders | limit ${limit} - offset ${offset} - dateIni ${dateIni} - dateEnd ${dateEnd}`;
 
-    return message;
+    return { message };
   }
 
   @Get(':id')
   getOne(@Param('id') id: number) {
     const message: string = `The order ${id}`;
 
-    return message;
+    return { message };
   }
 
   @Get(':id/products')
@@ -29,6 +29,6 @@ export class OrdersController {
   ) {
     const message: string = `Order ${id} has products | limit ${limit}, offset ${offset}`;
 
-    return message;
+    return { message };
   }
 }

@@ -9,13 +9,13 @@ export class CustomersController {
   ) {
     const message: string = `All customers | limit ${limit}, offset ${offset}`;
 
-    return message;
+    return { message };
   }
   @Get(':id')
   getOne(@Param('id') id: number) {
     const message: string = `Customer ${id}`;
 
-    return message;
+    return { message };
   }
   @Get(':id/orders')
   getOrders(
@@ -25,6 +25,6 @@ export class CustomersController {
   ) {
     const message: string = `Customer ${id} with orders | limit ${limit}, offset ${offset}`;
 
-    return message;
+    return { message };
   }
 }

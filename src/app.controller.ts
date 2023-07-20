@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, HttpStatus, HttpCode, Res } from '@nestjs/common';
 import { AppService } from './app.service';
+import { Response, Request } from 'express';
 
 @Controller()
 export class AppController {
@@ -28,5 +29,22 @@ export class AppController {
       ' this endpoint start and ends with slashes';
 
     return message;
+  }
+
+  @Get('/noContent')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  noContent() {
+    // The message is ignored because the method says there is no
+    // content, so that is the default behavior.
+    const message = `Everything is OK but there is no content`;
+    return message;
+  }
+
+  @Get('/expresshandled')
+  handledManually(@Res() response: Response) {
+    const message = 'Default message';
+    // console.log(response);
+    response.status(HttpStatus.OK).send(message);
+    // return message;
   }
 }

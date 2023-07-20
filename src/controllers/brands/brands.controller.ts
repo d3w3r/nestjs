@@ -9,13 +9,13 @@ export class BrandsController {
   ) {
     const message: string = `All brands | limit ${limit}, offset ${offset}`;
 
-    return message;
+    return { message };
   }
 
   @Get(':id')
   getOne(@Param('id') id: number) {
     const message: string = `Brand ${id}`;
 
-    return message;
+    return { message };
   }
 }

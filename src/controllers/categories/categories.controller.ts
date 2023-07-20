@@ -9,13 +9,13 @@ export class CategoriesController {
   ) {
     const message: string = `Get all categories | limit ${limit} - offset ${offset}`;
 
-    return message;
+    return { message };
   }
   @Get(':id')
   getCategory(@Param('id') id: number) {
     const message: string = `category ${id}`;
 
-    return message;
+    return { message };
   }
   @Get(':cid/products')
   getCategoriesAndProduct(
@@ -25,6 +25,6 @@ export class CategoriesController {
   ) {
     const message: string = `products of category ${cid} | limit ${limit} - offset ${offset}`;
 
-    return message;
+    return { message };
   }
 }

@@ -6,6 +6,6 @@ export class UsersController {
   getOne(@Param('id') id: number) {
     const message: string = `User ${id}`;
 
-    return message;
+    return { message };
   }
 }

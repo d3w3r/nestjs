@@ -34,3 +34,6 @@
 - Also when a controller is created with the cli tool the new controller file
   has a definition for the enpoint so i can avoid to write the name of the global
   enpoint all around the code.
+- Using the specific object `Res` and `Req` from nestjs with `Request`, `Response`
+  from express we have the advantage that we see the data in the original express
+  object, also we can response with that object and use all the builtin features.
