@@ -13,6 +13,9 @@
 ## Commands for Nestjs-cli
 
 - To initialize a new project `nest new project`.
+- To create a controller `nest g co controllerName` the extra flag `--flat`
+  creates the controller with not a folder specific for the controller the
+  name is tuned to show that is a controllers like `product.controllers.js`
 
 ## About using NestJS
 
@@ -24,3 +27,10 @@
   the second route can not be interpreted beause the part `filter` is interpreted
   as the argument `id` in the first route to avoid that the static routes must
   be defined at first and the last must be the dinamically routes.
+- When a controller is created with the _cli_ it creates two files one for the
+  logic inside the controller and the other for unit tests, the second file has
+  naming pattern like `.spec.js`, using the cli is a best option beacuse it
+  connects the controllers in the main module.
+- Also when a controller is created with the cli tool the new controller file
+  has a definition for the enpoint so i can avoid to write the name of the global
+  enpoint all around the code.
