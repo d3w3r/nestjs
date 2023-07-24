@@ -37,3 +37,9 @@
 - Using the specific object `Res` and `Req` from nestjs with `Request`, `Response`
   from express we have the advantage that we see the data in the original express
   object, also we can response with that object and use all the builtin features.
+- The injection of dependency of services is made into the controllers code, adding
+  first of all the service then when have to declarate the service into the constructor
+  with the shorthad and nest will understand that as a inyection dependenci.
+- If i am using the object of express to manage the response we cannot use the
+  return inside the controller to return the response that is the way that nest
+  do it, so i have also manually to return that response.

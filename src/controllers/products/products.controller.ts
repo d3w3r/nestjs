@@ -10,48 +10,43 @@ import {
   Patch,
 } from '@nestjs/common';
 
+import { ProductsService } from './../../services/products/products.service';
+
 @Controller('products')
 export class ProductsController {
+  constructor(private productsService: ProductsService) {}
+
   @Get()
   getProducts(
     @Query('brand') brand: string,
     @Query('limit') limit = 10,
     @Query('offset') offset = 0,
   ) {
-    const message = `products | limit = ${limit} offset = ${offset} brand = ${brand}`;
-
-    return { message };
+    return this.productsService.findAll();
   }
 
   @Get(':id')
   getProduct(@Param('id') id: number) {
-    const message = `product ${id}`;
-
-    return { message };
+    return this.productsService.findOne(Number(id));
   }
 
   @Post()
   create(@Body() payload: unknown) {
-    const message = 'action create Product';
-
-    return { message, payload };
+    return this.productsService.create(payload);
   }
 
   @Put(':id')
   update(@Param('id') id: number, @Body() payload: unknown) {
-    const message = `Action Updating Product ${id}`;
-    return { message, payload };
+    return this.productsService.update(Number(id), payload);
   }
 
   @Patch(':id')
   modify(@Param('id') id: number, @Body() payload: unknown) {
-    const message = `Action Modify Product ${id}`;
-    return { message, payload };
+    return this.productsService.modify(id, payload);
   }
 
   @Delete(':id')
   remove(@Param('id') id: number) {
-    const message = `Product ${id} removed`;
-    return { message };
+    return this.productsService.remove(Number(id));
   }
 }
