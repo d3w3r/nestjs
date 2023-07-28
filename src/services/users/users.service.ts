@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { User } from './../../entities/users.entity';
 import {
@@ -14,6 +14,8 @@ export class UsersService {
 
   getOne(id: number) {
     const user = this.users.find((e) => e.id === id);
+    if (!user) throw new NotFoundException(`User ${id} not found`);
+
     return user;
   }
   create(payload: CreateUserDto) {
@@ -29,6 +31,7 @@ export class UsersService {
   update(id: number, payload: UpdateUserDto) {
     const index = this.users.findIndex((e) => e.id === id);
     const userOld = this.users.at(index);
+    if (!userOld) throw new NotFoundException(`User ${id} not found`);
 
     this.users[index] = {
       id: userOld.id,
@@ -40,18 +43,20 @@ export class UsersService {
   modify(id: number, payload: PatchUserDto) {
     const index = this.users.findIndex((e) => e.id === id);
     const userOld = this.users.at(index);
+    if (!userOld) throw new NotFoundException(`User ${id} not found`);
 
     const userMod = {
       ...userOld,
       ...payload,
     };
-
     this.users[index] = userMod;
 
     return this.users.at(index);
   }
   remove(id: number) {
     const index = this.users.findIndex((e) => e.id === id);
+    if (!index) throw new NotFoundException(`User ${id} not found`);
+
     return this.users.splice(index, 1);
   }
 }

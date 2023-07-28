@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { Order } from './../../entities/orders.entity';
 import {
@@ -13,13 +13,21 @@ export class OrdersService {
   private counter = 1;
 
   getAll() {
+    const list = this.orders;
+    if (list.length === 0) throw new NotFoundException('Orders not found');
+
     return this.orders;
   }
   getOne(id: number) {
-    return this.orders.find((e) => e.id === id);
+    const order = this.orders.find((e) => e.id === id);
+    if (!order) throw new NotFoundException(`Order ${id} not found`);
+
+    return order;
   }
   getAllProducts(id: number) {
     const order = this.getOne(id);
+    if (order) throw new NotFoundException(`Order ${id} not found`);
+
     return order.products;
   }
   createOne(payload: CreateOrderDto) {
@@ -36,6 +44,7 @@ export class OrdersService {
   updateOne(id: number, payload: UpdateOrderDto) {
     const index = this.orders.findIndex((e) => e.id === id);
     const order = this.getOne(id);
+    if (!order) throw new NotFoundException(`Order ${id} not found`);
 
     const orderUpdate: Order = {
       id: order.id,
@@ -48,6 +57,7 @@ export class OrdersService {
   modifyOne(id: number, payload: ModifyOrderDto) {
     const index = this.orders.findIndex((e) => e.id === id);
     const order = this.getOne(id);
+    if (!order) throw new NotFoundException(`Order ${id} not found`);
 
     const orderModify: Order = {
       ...order,
@@ -59,6 +69,8 @@ export class OrdersService {
   }
   removeOne(id: number) {
     const index = this.orders.findIndex((e) => e.id === id);
+    if (index === -1) throw new NotFoundException(`Order ${id} not found`);
+
     return this.orders.splice(index, 1);
   }
 }

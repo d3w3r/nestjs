@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { Category } from './../../entities/categories.entity';
 import {
@@ -21,10 +21,16 @@ export class CategoriesService {
 
   getAll(limit: number, offset: number) {
     const end = offset + limit;
-    return this.categories.slice(offset, end);
+    const list = this.categories.slice(offset, end);
+    if (list.length === 0) throw new NotFoundException(`Categories not found`);
+
+    return list;
   }
   getOne(id: number) {
-    return this.categories.find((c) => c.id === id);
+    const category = this.categories.find((c) => c.id === id);
+    if (!category) throw new NotFoundException(`Category ${id} not found`);
+
+    return category;
   }
   createOne(payload: CreateCategoryDto) {
     const categoryNew: Category = {
@@ -39,8 +45,7 @@ export class CategoriesService {
   updateOne(id: number, payload: UpdateCategoryDto) {
     const index = this._getIndex(id);
     const categoryOld = this.getOne(id);
-
-    if (!categoryOld || !index) return undefined;
+    if (!categoryOld) throw new NotFoundException(`Category ${id} not found`);
 
     const categoryUpdated: Category = {
       id: categoryOld.id,
@@ -53,8 +58,7 @@ export class CategoriesService {
   modifyOne(id: number, payload: ModifyCategoryDto) {
     const index = this._getIndex(id);
     const categoryOld = this.getOne(id);
-
-    if (!index || !categoryOld) return undefined;
+    if (!categoryOld) throw new NotFoundException(`Category ${id} not found`);
 
     const categoryModified = {
       ...categoryOld,
@@ -67,6 +71,8 @@ export class CategoriesService {
   removeOne(id: number) {
     const amount = 1;
     const index = this._getIndex(id);
+    if (index === -1) throw new NotFoundException(`Category ${id} not found`);
+
     return this.categories.splice(index, amount);
   }
 }

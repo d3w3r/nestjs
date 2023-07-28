@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { Brand } from './../../entities/brands.entity';
 import {
@@ -18,10 +18,16 @@ export class BrandsService {
 
   getAll(limit: number, offset: number) {
     const end = limit + offset;
-    return this.brands.slice(offset, end);
+    const list = this.brands.slice(offset, end);
+    if (!list) throw new NotFoundException('Brands not found');
+
+    return list;
   }
   getOne(id: number) {
-    return this.brands.find((b) => b.id === id);
+    const brand = this.brands.find((b) => b.id === id);
+    if (!brand) throw new NotFoundException(`Brand ${id} not found`);
+
+    return brand;
   }
   createOne(payload: CreateBrandDto) {
     const brandNew = {
@@ -35,6 +41,8 @@ export class BrandsService {
   }
   updateOne(id: number, payload: UpdateBrandDto) {
     const index = this.getIndex(id);
+    if (index === -1) throw new NotFoundException(`Brand ${id} not found`);
+
     const brandUpdate = {
       id,
       ...payload,
@@ -46,6 +54,8 @@ export class BrandsService {
   modifyOne(id: number, payload: ModifyBrandDto) {
     const index = this.getIndex(id);
     const brand = this.brands[index];
+    if (!brand) throw new NotFoundException(`Brand ${id} not found`);
+
     const brandModified = {
       ...brand,
       ...payload,
@@ -57,6 +67,7 @@ export class BrandsService {
   removeOne(id: number) {
     const TO_REMOVE = 1;
     const index = this.getIndex(id);
+    if (index === -1) throw new NotFoundException(`Brand ${id} not found`);
 
     return this.brands.splice(index, TO_REMOVE);
   }
