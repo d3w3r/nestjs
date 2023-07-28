@@ -8,6 +8,11 @@ import { UsersController } from './controllers/users/users.controller';
 import { CustomersController } from './controllers/customers/customers.controller';
 import { BrandsController } from './controllers/brands/brands.controller';
 import { ProductsService } from './services/products/products.service';
+import { UsersService } from './services/users/users.service';
+import { OrdersService } from './services/orders/orders.service';
+import { CustomersService } from './services/customers/customers.service';
+import { CategoriesService } from './services/categories/categories.service';
+import { BrandsService } from './services/brands/brands.service';
 
 @Module({
   imports: [],
@@ -20,6 +25,14 @@ import { ProductsService } from './services/products/products.service';
     CustomersController,
     BrandsController,
   ],
-  providers: [AppService, ProductsService],
+  providers: [
+    AppService,
+    ProductsService,
+    UsersService,
+    OrdersService,
+    CustomersService,
+    CategoriesService,
+    BrandsService,
+  ],
 })
 export class AppModule {}

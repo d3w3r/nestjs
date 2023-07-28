@@ -10,43 +10,44 @@ import {
   Body,
 } from '@nestjs/common';
 
+import { BrandsService } from './../../services/brands/brands.service';
+import {
+  CreateBrandDto,
+  UpdateBrandDto,
+  ModifyBrandDto,
+} from './../../dtos/brands.dto';
+
 @Controller('brands')
 export class BrandsController {
+  constructor(private brandsService: BrandsService) {}
+
   @Get()
   getAll(@Query('limit') limit = 10, @Query('offset') offset = 0) {
-    const message = `All brands | limit ${limit}, offset ${offset}`;
-
-    return { message };
+    return this.brandsService.getAll(limit, offset);
   }
 
   @Get(':id')
   getOne(@Param('id') id: number) {
-    const message = `Brand ${id}`;
-
-    return { message };
+    return this.brandsService.getOne(Number(id));
   }
 
   @Post()
-  create(@Body() payload: unknown) {
-    const message = 'Action create a new Brand';
-    return { message, payload };
+  create(@Body() payload: CreateBrandDto) {
+    return this.brandsService.createOne(payload);
   }
 
   @Put(':id')
-  change(@Param('id') id: number, @Body() payload: unknown) {
-    const message = `Action change the Brand ${id} for another`;
-    return { message, payload };
+  change(@Param('id') id: number, @Body() payload: UpdateBrandDto) {
+    return this.brandsService.updateOne(Number(id), payload);
   }
 
   @Patch(':id')
-  modify(@Param('id') id: number, @Body() payload: unknown) {
-    const message = `Action modify the Branch ${id}`;
-    return { message, payload };
+  modify(@Param('id') id: number, @Body() payload: ModifyBrandDto) {
+    return this.brandsService.modifyOne(Number(id), payload);
   }
 
   @Delete(':id')
   remove(@Param('id') id: number) {
-    const message = `Action remove the Brand ${id}`;
-    return { message };
+    return this.brandsService.removeOne(id);
   }
 }

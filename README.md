@@ -43,3 +43,7 @@
 - If i am using the object of express to manage the response we cannot use the
   return inside the controller to return the response that is the way that nest
   do it, so i have also manually to return that response.
+
+# TODO LIST
+
+- Add the services like the product service for the other controllers.

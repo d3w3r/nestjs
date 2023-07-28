@@ -9,36 +9,39 @@ import {
   Body,
 } from '@nestjs/common';
 
+import { UsersService } from './../../services/users/users.service';
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  PatchUserDto,
+} from '../../dtos/users.dto';
+
 @Controller('users')
 export class UsersController {
+  constructor(private usersService: UsersService) {}
+
   @Get(':id')
   getOne(@Param('id') id: number) {
-    const message = `User ${id}`;
-
-    return { message };
+    return this.usersService.getOne(Number(id));
   }
 
   @Post()
-  create(@Body() payload: unknown) {
-    const message = 'Method for create a user';
-    return { message, payload };
+  create(@Body() payload: CreateUserDto) {
+    return this.usersService.create(payload);
   }
 
   @Put(':id')
-  change(@Param('id') id: number, @Body() payload: unknown) {
-    const message = `Method for change the user ${id}.`;
-    return { message, payload };
+  change(@Param('id') id: number, @Body() payload: UpdateUserDto) {
+    return this.usersService.update(Number(id), payload);
   }
 
   @Patch(':id')
-  modify(@Param('id') id: number, @Body() payload: unknown) {
-    const message = `Method for modify the user ${id}.`;
-    return { message, payload };
+  modify(@Param('id') id: number, @Body() payload: PatchUserDto) {
+    return this.usersService.modify(Number(id), payload);
   }
 
   @Delete(':id')
   remove(@Param('id') id: number) {
-    const message = `Method for remove the user ${id}`;
-    return { message };
+    return this.usersService.remove(Number(id));
   }
 }
