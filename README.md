@@ -16,6 +16,8 @@
 - To create a controller `nest g co controllerName` the extra flag `--flat`
   creates the controller with not a folder specific for the controller the
   name is tuned to show that is a controllers like `product.controllers.js`
+- To create a service `nest g s path`.
+- To create a pipe `nest g pipe path`.
 
 ## About using NestJS
 
@@ -52,6 +54,7 @@
   when the data comes from params, query becuase its data is received as string and
   must be transformed, the builtint pipes must be placed inside the http decorators,
   also the pipes can be customized.
+- The customized pipes can be used as any other built int pipes.
 
 # TODO LIST
 

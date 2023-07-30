@@ -8,10 +8,11 @@ import {
   Put,
   Delete,
   Patch,
-  ParseIntPipe,
+  // ParseIntPipe,
 } from '@nestjs/common';
 
 import { ProductsService } from './../../services/products/products.service';
+import { ParseIntPipe } from './../../common/parse-int/parse-int.pipe';
 import {
   CreateProductDto,
   UpdateProductDto,
