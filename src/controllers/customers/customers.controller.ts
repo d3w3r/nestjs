@@ -12,6 +12,7 @@ import {
   Res,
   HttpStatus,
   HttpCode,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
@@ -27,18 +28,21 @@ export class CustomersController {
   constructor(private customersService: CustomersService) {}
 
   @Get()
-  getAll(@Query('limit') limit = 10, @Query('offset') offset = 0) {
+  getAll(
+    @Query('limit', ParseIntPipe) limit = 10,
+    @Query('offset', ParseIntPipe) offset = 0,
+  ) {
     return this.customersService.getAll();
   }
   @Get(':id')
-  getOne(@Param('id') id: number) {
-    return this.customersService.getOne(Number(id));
+  getOne(@Param('id', ParseIntPipe) id: number) {
+    return this.customersService.getOne(id);
   }
   @Get(':id/orders')
   getOrders(
-    @Param('id') id: number,
-    @Query('limit') limit = 10,
-    @Query('offset') offset = 0,
+    @Param('id', ParseIntPipe) id: number,
+    @Query('limit', ParseIntPipe) limit = 10,
+    @Query('offset', ParseIntPipe) offset = 0,
     @Res() res: Response,
   ) {
     const message = `Customer ${id} with orders | limit ${limit}, offset ${offset}`;
@@ -53,17 +57,23 @@ export class CustomersController {
   }
   @Put(':id')
   @HttpCode(HttpStatus.ACCEPTED)
-  change(@Param('id') id: number, @Body() payload: UpdateCustomerDto) {
-    return this.customersService.updateOne(Number(id), payload);
+  change(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() payload: UpdateCustomerDto,
+  ) {
+    return this.customersService.updateOne(id, payload);
   }
   @Patch(':id')
   @HttpCode(HttpStatus.ACCEPTED)
-  modify(@Param('id') id: number, @Body() payload: ModifyCustomerDto) {
-    return this.customersService.modifyOne(Number(id), payload);
+  modify(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() payload: ModifyCustomerDto,
+  ) {
+    return this.customersService.modifyOne(id, payload);
   }
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  remove(@Param('id') id: number) {
-    return this.customersService.removeOne(Number(id));
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.customersService.removeOne(id);
   }
 }

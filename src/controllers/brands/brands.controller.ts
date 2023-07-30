@@ -8,6 +8,7 @@ import {
   Delete,
   Post,
   Body,
+  ParseIntPipe,
 } from '@nestjs/common';
 
 import { BrandsService } from './../../services/brands/brands.service';
@@ -22,13 +23,16 @@ export class BrandsController {
   constructor(private brandsService: BrandsService) {}
 
   @Get()
-  getAll(@Query('limit') limit = 10, @Query('offset') offset = 0) {
+  getAll(
+    @Query('limit', ParseIntPipe) limit = 10,
+    @Query('offset', ParseIntPipe) offset = 0,
+  ) {
     return this.brandsService.getAll(limit, offset);
   }
 
   @Get(':id')
-  getOne(@Param('id') id: number) {
-    return this.brandsService.getOne(Number(id));
+  getOne(@Param('id', ParseIntPipe) id: number) {
+    return this.brandsService.getOne(id);
   }
 
   @Post()
@@ -37,17 +41,23 @@ export class BrandsController {
   }
 
   @Put(':id')
-  change(@Param('id') id: number, @Body() payload: UpdateBrandDto) {
-    return this.brandsService.updateOne(Number(id), payload);
+  change(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() payload: UpdateBrandDto,
+  ) {
+    return this.brandsService.updateOne(id, payload);
   }
 
   @Patch(':id')
-  modify(@Param('id') id: number, @Body() payload: ModifyBrandDto) {
-    return this.brandsService.modifyOne(Number(id), payload);
+  modify(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() payload: ModifyBrandDto,
+  ) {
+    return this.brandsService.modifyOne(id, payload);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.brandsService.removeOne(id);
   }
 }

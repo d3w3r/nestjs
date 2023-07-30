@@ -8,6 +8,7 @@ import {
   Put,
   Patch,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 
 import { OrdersService } from './../../services/orders/orders.service';
@@ -23,26 +24,26 @@ export class OrdersController {
 
   @Get()
   getAll(
-    @Query('limit') limit = 10,
-    @Query('offset') offset = 0,
-    @Query('dateIni') dateIni: number,
-    @Query('dateEnd') dateEnd: number,
+    @Query('limit', ParseIntPipe) limit = 10,
+    @Query('offset', ParseIntPipe) offset = 0,
+    @Query('dateIni', ParseIntPipe) dateIni: number,
+    @Query('dateEnd', ParseIntPipe) dateEnd: number,
   ) {
     return this.ordersService.getAll();
   }
 
   @Get(':id')
-  getOne(@Param('id') id: number) {
-    return this.ordersService.getOne(Number(id));
+  getOne(@Param('id', ParseIntPipe) id: number) {
+    return this.ordersService.getOne(id);
   }
 
   @Get(':id/products')
   getProducts(
-    @Param('id') id: number,
-    @Query('limit') limit = 10,
-    @Query('offset') offset = 0,
+    @Param('id', ParseIntPipe) id: number,
+    @Query('limit', ParseIntPipe) limit = 10,
+    @Query('offset', ParseIntPipe) offset = 0,
   ) {
-    return this.ordersService.getAllProducts(Number(id));
+    return this.ordersService.getAllProducts(id);
   }
 
   @Post()
@@ -51,17 +52,23 @@ export class OrdersController {
   }
 
   @Put(':id')
-  change(@Param('id') id: number, @Body() payload: UpdateOrderDto) {
-    return this.ordersService.updateOne(Number(id), payload);
+  change(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() payload: UpdateOrderDto,
+  ) {
+    return this.ordersService.updateOne(id, payload);
   }
 
   @Patch(':id')
-  modify(@Param('id') id: number, @Body() payload: ModifyOrderDto) {
-    return this.ordersService.modifyOne(Number(id), payload);
+  modify(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() payload: ModifyOrderDto,
+  ) {
+    return this.ordersService.modifyOne(id, payload);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.ordersService.removeOne(Number(id));
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.ordersService.removeOne(id);
   }
 }

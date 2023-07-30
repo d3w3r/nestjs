@@ -43,7 +43,15 @@
 - If i am using the object of express to manage the response we cannot use the
   return inside the controller to return the response that is the way that nest
   do it, so i have also manually to return that response.
+- The exceptions into `@nestjs/commons` made the response for the api with status
+  codes a way easy that can be implemented into services, for example to handle 
+  when a search into a database has no response and want to response with the status
+  code 404, there are another kinds of exeptions.
+- The pipes that are another common in nestjs allows to transform and validate data
+  received before enter into the controller, this are required normally to validate
+  when the data comes from params, query becuase its data is received as string and
+  must be transformed, the builtint pipes must be placed inside the http decorators,
+  also the pipes can be customized.
 
 # TODO LIST
 
-- Add the services like the product service for the other controllers.

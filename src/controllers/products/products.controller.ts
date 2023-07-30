@@ -8,6 +8,7 @@ import {
   Put,
   Delete,
   Patch,
+  ParseIntPipe,
 } from '@nestjs/common';
 
 import { ProductsService } from './../../services/products/products.service';
@@ -24,15 +25,15 @@ export class ProductsController {
   @Get()
   getProducts(
     @Query('brand') brand: string,
-    @Query('limit') limit = 10,
-    @Query('offset') offset = 0,
+    @Query('limit', ParseIntPipe) limit = 10,
+    @Query('offset', ParseIntPipe) offset = 0,
   ) {
-    return this.productsService.findAll();
+    return this.productsService.findAll(/*limit, offset*/);
   }
 
   @Get(':id')
-  getProduct(@Param('id') id: number) {
-    return this.productsService.findOne(Number(id));
+  getProduct(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.findOne(id);
   }
 
   @Post()
@@ -41,17 +42,23 @@ export class ProductsController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() payload: UpdateProductDto) {
-    return this.productsService.update(Number(id), payload);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() payload: UpdateProductDto,
+  ) {
+    return this.productsService.update(id, payload);
   }
 
   @Patch(':id')
-  modify(@Param('id') id: number, @Body() payload: ModifyProductDto) {
-    return this.productsService.modify(Number(id), payload);
+  modify(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() payload: ModifyProductDto,
+  ) {
+    return this.productsService.modify(id, payload);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.productsService.remove(Number(id));
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.remove(id);
   }
 }
