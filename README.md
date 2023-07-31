@@ -4,6 +4,8 @@
 - Check the version installed of nestjs `nest --version`.
 - You have the documentation for help `nest --help`.
 - Recomended plugings to development `prettier`, `eslint`, `editor config`.
+- Validator of shapes `npm i class-validator class-transformer`
+- Utility types in nestjs `npm i @nestjs/mapped-types`.
 
 ## Handling the packages with npm
 
@@ -55,6 +57,22 @@
   must be transformed, the builtint pipes must be placed inside the http decorators,
   also the pipes can be customized.
 - The customized pipes can be used as any other built int pipes.
+- The documentation of nest specify that we should use classes instead of interfaces
+  to validate the shape and types in execution time and also in development time, and
+  setup the code with:
+  ```javascript
+    // main.ts
+    import { ValidationPipe } from '@nestjs/common';
+    ...
+    app.useGlobalPipes(
+      new ValidationPipe({
+        whitelist: true, // Discard unexpected types for body
+        forbidNonWhitelisted: true, // Alert for unexpected types for body
+        disableErrorMessages: true, // Doesn't show error messages in production
+      })
+    );
+    ...
+  ```
 
 # TODO LIST
 

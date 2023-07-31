@@ -10,16 +10,11 @@ import {
 @Injectable()
 export class ProductsService {
   private counter = 1;
-  private products: Product[] = [
-    {
-      id: 1,
-      name: 'product 1',
-      description: 'bla bla',
-      price: 122,
-      stock: 1283,
-      image: 'http://localhost:3000/images/cat.png',
-    },
-  ];
+  private products: Product[] = [];
+
+  private _increaseCounter() {
+    this.counter++;
+  }
 
   findAll() {
     const products = this.products;
@@ -35,16 +30,14 @@ export class ProductsService {
     return product;
   }
   create(payload: CreateProductDto) {
-    this.counter++;
+    const newProduct = {
+      id: this.counter,
+      ...payload,
+    };
+    this.products.push(newProduct);
+    this._increaseCounter();
 
-    if (typeof payload === 'object') {
-      const newProduct = {
-        id: this.counter,
-        ...payload,
-      };
-
-      this.products.push(newProduct as Product);
-    }
+    return newProduct;
   }
   update(id: number, payload: UpdateProductDto) {
     const product = this.findOne(id);
