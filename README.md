@@ -20,6 +20,7 @@
   name is tuned to show that is a controllers like `product.controllers.js`
 - To create a service `nest g s path`.
 - To create a pipe `nest g pipe path`.
+- To create a module `nest g mo name`.
 
 ## About using NestJS
 
@@ -73,6 +74,13 @@
     );
     ...
   ```
+- When the code is moved from the basic structure of controllers and services to a module
+  we have to remove the contollers and providers inyection into the main module, also we
+  have to inyect that dependencies inside each module, also i have to import into the main
+  module the other modules.
+
+## Git commands
+- to clone a branch `git clone -b name url` to clone only the brach.
 
 # TODO LIST
 
