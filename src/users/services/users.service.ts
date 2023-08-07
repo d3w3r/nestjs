@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
+import { Order } from './../../orders/entities/orders.entity';
 import { User } from './../entities/users.entity';
 import { Customer } from './../../customers/entities/customers.entity';
 import { CustomersService } from './../../customers/services/customers.service';
@@ -9,6 +10,7 @@ import {
   PatchUserDto,
   ReviewUserDto,
 } from './../dtos/users.dto';
+import { ProductsService } from './../../products/services/products.service';
 
 @Injectable()
 export class UsersService {
@@ -73,4 +75,13 @@ export class UsersService {
 
     return this.users.splice(index, 1);
   }
+
+  // getOrderByUser(id: number) {
+  //   const user = this.getOne(id);
+  //   return {
+  //     date: new Date(),
+  //     user,
+  //     products: this.productsService.findAll(),
+  //   };
+  // }
 }
