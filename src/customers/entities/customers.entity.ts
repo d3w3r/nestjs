@@ -1,5 +1,3 @@
-import { User } from './../../users/entities/users.entity';
-
 import {
   IsNotEmpty,
   IsNumber,
@@ -31,7 +29,4 @@ export class Customer {
   @IsEmail()
   @IsOptional()
   readonly email?: string;
-
-  // @IsNotEmpty()
-  // readonly user: User;
 }

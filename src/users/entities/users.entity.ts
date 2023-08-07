@@ -17,7 +17,7 @@ export class User {
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  readonly email: string;
+  readonly nickname: string;
 
   @IsNotEmpty()
   @IsString()

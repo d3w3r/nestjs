@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsArray,
   ArrayNotEmpty,
+  IsDate,
 } from 'class-validator';
 
 export class Order {
@@ -11,6 +12,10 @@ export class Order {
   @IsNumber()
   @IsPositive()
   readonly id: number;
+
+  @IsNotEmpty()
+  @IsDate()
+  readonly date: Date;
 
   @IsNotEmpty()
   @IsNumber()

@@ -88,6 +88,7 @@ export class OrdersService {
   createOne(payload: CreateOrderDto) {
     const newOrder: Order = {
       id: this.counter,
+      date: new Date(),
       ...payload,
     };
 
@@ -103,6 +104,7 @@ export class OrdersService {
 
     const orderUpdate: Order = {
       id: order.id,
+      date: new Date(),
       ...payload,
     };
 
