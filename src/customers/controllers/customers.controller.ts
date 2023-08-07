@@ -29,8 +29,8 @@ export class CustomersController {
 
   @Get()
   getAll(
-    @Query('limit', ParseIntPipe) limit = 10,
-    @Query('offset', ParseIntPipe) offset = 0,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
+    @Query('offset', new ParseIntPipe({ optional: true })) offset = 0,
   ) {
     return this.customersService.getAll();
   }

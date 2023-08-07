@@ -32,6 +32,6 @@ export class Customer {
   @IsOptional()
   readonly email?: string;
 
-  @IsNotEmpty()
-  readonly user: User;
+  // @IsNotEmpty()
+  // readonly user: User;
 }

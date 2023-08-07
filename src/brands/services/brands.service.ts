@@ -10,7 +10,7 @@ import {
 @Injectable()
 export class BrandsService {
   private brands: Brand[] = [];
-  private counter: number;
+  private counter = 1;
 
   private getIndex(id: number) {
     return this.brands.findIndex((b) => b.id === id);

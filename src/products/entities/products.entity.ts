@@ -5,11 +5,13 @@ import {
   IsNotEmpty,
   IsPositive,
   Length,
+  ArrayNotEmpty,
+  IsArray,
 } from 'class-validator';
 
 export class Product {
-  @IsNumber()
   @IsNotEmpty()
+  @IsNumber()
   @IsPositive()
   readonly id: number;
 
@@ -18,22 +20,32 @@ export class Product {
   @Length(1, 250)
   readonly name: string;
 
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   @Length(5, 250)
   readonly description: string;
 
-  @IsNumber()
   @IsNotEmpty()
+  @IsUrl()
+  readonly image: string;
+
+  @IsNotEmpty()
+  @IsNumber()
   @IsPositive()
   readonly price: number;
 
-  @IsNumber()
   @IsNotEmpty()
+  @IsNumber()
   @IsPositive()
   readonly stock: number;
 
-  @IsUrl()
   @IsNotEmpty()
-  readonly image: string;
+  @IsNumber()
+  @IsPositive()
+  readonly brandID: number;
+
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsNumber({}, { each: true })
+  readonly categoriesID: number[];
 }

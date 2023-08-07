@@ -1,10 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { User } from './../entities/users.entity';
+import { Customer } from './../../customers/entities/customers.entity';
+import { CustomersService } from './../../customers/services/customers.service';
 import {
   CreateUserDto,
   UpdateUserDto,
   PatchUserDto,
+  ReviewUserDto,
 } from './../dtos/users.dto';
 
 @Injectable()
@@ -12,11 +15,22 @@ export class UsersService {
   private counter = 1;
   private users: User[] = [];
 
+  constructor(private customersService: CustomersService) {}
+
   getOne(id: number) {
     const user = this.users.find((e) => e.id === id);
     if (!user) throw new NotFoundException(`User ${id} not found`);
 
-    return user;
+    const { customerID, ...copied } = user;
+
+    let customer = undefined;
+    try {
+      customer = this.customersService.getOne(customerID);
+    } catch (err) {}
+
+    const response: ReviewUserDto = { ...copied, customer };
+
+    return response;
   }
   create(payload: CreateUserDto) {
     const newUser: User = {

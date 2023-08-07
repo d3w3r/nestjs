@@ -8,11 +8,12 @@ import {
   Put,
   Delete,
   Patch,
-  // ParseIntPipe,
+  ParseIntPipe,
+  ParseBoolPipe,
 } from '@nestjs/common';
 
 import { ProductsService } from './../services/products.service';
-import { ParseIntPipe } from '../../common/parse-int/parse-int.pipe';
+// import { ParseIntPipe } from '../../common/parse-int/parse-int.pipe';
 import {
   CreateProductDto,
   UpdateProductDto,
@@ -26,15 +27,19 @@ export class ProductsController {
   @Get()
   getProducts(
     @Query('brand') brand: string,
-    @Query('limit', ParseIntPipe) limit = 10,
-    @Query('offset', ParseIntPipe) offset = 0,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
+    @Query('offset', new ParseIntPipe({ optional: true })) offset = 0,
+    @Query('verbose', new ParseBoolPipe({ optional: true })) verbose = false,
   ) {
-    return this.productsService.findAll(/*limit, offset*/);
+    return this.productsService.findAll(verbose /*limit, offset*/);
   }
 
   @Get(':id')
-  getProduct(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.findOne(id);
+  getProduct(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('verbose', new ParseBoolPipe({ optional: true })) verbose = false,
+  ) {
+    return this.productsService.findOne(id, verbose);
   }
 
   @Post()

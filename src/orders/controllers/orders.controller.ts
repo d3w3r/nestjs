@@ -24,10 +24,10 @@ export class OrdersController {
 
   @Get()
   getAll(
-    @Query('limit', ParseIntPipe) limit = 10,
-    @Query('offset', ParseIntPipe) offset = 0,
-    @Query('dateIni', ParseIntPipe) dateIni: number,
-    @Query('dateEnd', ParseIntPipe) dateEnd: number,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
+    @Query('offset', new ParseIntPipe({ optional: true })) offset = 0,
+    @Query('dateIni', new ParseIntPipe({ optional: true })) dateIni: number,
+    @Query('dateEnd', new ParseIntPipe({ optional: true })) dateEnd: number,
   ) {
     return this.ordersService.getAll();
   }

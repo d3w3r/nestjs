@@ -9,16 +9,17 @@ import {
 } from 'class-validator';
 
 export class User {
+  @IsNotEmpty()
   @IsNumber()
   @IsPositive()
-  @IsNotEmpty()
   readonly id: number;
 
+  @IsNotEmpty()
   @IsString()
   @IsEmail()
-  @IsNotEmpty()
   readonly email: string;
 
+  @IsNotEmpty()
   @IsString()
   @IsStrongPassword({
     minLength: 6,
@@ -27,7 +28,11 @@ export class User {
     minNumbers: 1,
     minSymbols: 1,
   })
-  @IsNotEmpty()
   @Length(6, 25)
   readonly password: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @IsPositive()
+  readonly customerID: number;
 }
