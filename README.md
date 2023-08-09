@@ -91,6 +91,13 @@
   that can be usefull to share values globally combined with the dependency injection, and
   then export that useValue and the value can be used globally with only using the `Inject`
   decorator inside the constructor of the service or the controller.
+- To make calls to another apis inside nestjs we have to use a module called `HttpModule` and
+  a service from that module called `HttpService` that comes from the module `@nestjs/axios`
+  that is a un implementation of axios.
+- To work with env variables we can use another module of nestjs `@nestjs/config` that allows
+  to config the env files and work with them of the right way, The config module must be configured
+  in the appmodule, and the config service is the one that can be used to get the values of the
+  enviroment variables with help the method get.
 
 ## Git commands
 - to clone a branch `git clone -b name url` to clone only the brach.

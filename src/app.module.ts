@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
+import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -12,6 +13,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { BrandsModule } from './brands/brands.module';
 import { Todo } from './common/entities/todos.entity';
 import { DatabaseModule } from './database/database.module';
+import { environments } from './environments';
 
 @Module({
   imports: [
@@ -23,6 +25,10 @@ import { DatabaseModule } from './database/database.module';
     BrandsModule,
     HttpModule,
     DatabaseModule,
+    ConfigModule.forRoot({
+      envFilePath: environments[process.env.NODE_ENV] || '.env',
+      isGlobal: true,
+    }),
   ],
   controllers: [AppController],
   providers: [

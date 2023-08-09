@@ -16,6 +16,11 @@ export class AppController {
     return this.appService.getTasks();
   }
 
+  @Get('envs')
+  getEnvironments() {
+    return this.appService.getEnvs();
+  }
+
   @Get('new')
   newPlace(): string {
     const message: string =

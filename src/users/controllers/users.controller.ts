@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   Inject,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 import { UsersService } from './../services/users.service';
 import {
@@ -22,12 +23,13 @@ import {
 export class UsersController {
   constructor(
     private usersService: UsersService,
-    @Inject('X_API_KEY') private apikey: string,
+    // @Inject('X_API_KEY') private apikey: string,
+    private configService: ConfigService,
   ) {}
 
   @Get('apikey')
   getTasks() {
-    return `This is apikey value: ${this.apikey}`;
+    return `This is apikey value: ${this.configService.get('X_API_KEY')}`;
   }
 
   @Get(':id')
