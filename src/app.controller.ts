@@ -8,10 +8,12 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    const message = 'Hola Mundo';
+    return this.appService.getHello();
+  }
 
-    return message;
-    // return this.appService.getHello();
+  @Get('tasks')
+  getTasks() {
+    return this.appService.getTasks();
   }
 
   @Get('new')

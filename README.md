@@ -82,6 +82,11 @@
   parent module, where we will require that service we have to import the module parent inside
   the worker module, and inside the service that works generally we have to import normally
   the service following the full path for the file.
+- When we are talking about dependency injection with the pattern singleton we can use the 
+  `provider` parameter into the module, there are some kind of injection `useClass` that is
+  the normal dependency injection, there is other `useValue` that is an injection of a value
+  with singleton, the other injection is `useFactory` the features is that `asynchronous`
+  and allows the `dependency injection`.
 
 ## Git commands
 - to clone a branch `git clone -b name url` to clone only the brach.
