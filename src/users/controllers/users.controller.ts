@@ -8,6 +8,7 @@ import {
   Post,
   Body,
   ParseIntPipe,
+  Inject,
 } from '@nestjs/common';
 
 import { UsersService } from './../services/users.service';
@@ -19,7 +20,15 @@ import {
 
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    @Inject('X_API_KEY') private apikey: string,
+  ) {}
+
+  @Get('apikey')
+  getTasks() {
+    return `This is apikey value: ${this.apikey}`;
+  }
 
   @Get(':id')
   getOne(@Param('id', ParseIntPipe) id: number) {
@@ -48,10 +57,4 @@ export class UsersController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.remove(Number(id));
   }
-
-  // // Extra services
-  // @Get(':id/orders')
-  // getAllOrders(@Param('id', ParseIntPipe) id: number) {
-  //   return this.usersService.getOrderByUser(id);
-  // }
 }

@@ -87,6 +87,10 @@
   the normal dependency injection, there is other `useValue` that is an injection of a value
   with singleton, the other injection is `useFactory` the features is that `asynchronous`
   and allows the `dependency injection`.
+- With the previous knowledge we have to use other code of nestjs like `Global` a decorator
+  that can be usefull to share values globally combined with the dependency injection, and
+  then export that useValue and the value can be used globally with only using the `Inject`
+  decorator inside the constructor of the service or the controller.
 
 ## Git commands
 - to clone a branch `git clone -b name url` to clone only the brach.

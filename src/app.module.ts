@@ -11,9 +11,7 @@ import { CustomersModule } from './customers/customers.module';
 import { CategoriesModule } from './categories/categories.module';
 import { BrandsModule } from './brands/brands.module';
 import { Todo } from './common/entities/todos.entity';
-
-const X_API_KEY = 'Temporal123';
-const X_API_KEY_PROD = 'ksdh12hhsdk2h9';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -24,14 +22,11 @@ const X_API_KEY_PROD = 'ksdh12hhsdk2h9';
     CategoriesModule,
     BrandsModule,
     HttpModule,
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: 'X_API_KEY',
-      useValue: process.env.NODE_ENV === 'prod' ? X_API_KEY_PROD : X_API_KEY,
-    },
     {
       provide: 'TASKS',
       useFactory: async (http: HttpService) => {
