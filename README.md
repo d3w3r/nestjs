@@ -98,6 +98,10 @@
   to config the env files and work with them of the right way, The config module must be configured
   in the appmodule, and the config service is the one that can be used to get the values of the
   enviroment variables with help the method get.
+- With the statement `export default` when i have to import i dont have to make destructuring
+  only the importation like `import config from './config'`.
+- To validate the schema of the configuration we can use the module `joi` to valida from
+  the configuration in the app.module the config schema. 
 
 ## Git commands
 - to clone a branch `git clone -b name url` to clone only the brach.
