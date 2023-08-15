@@ -82,6 +82,17 @@
   parent module, where we will require that service we have to import the module parent inside
   the worker module, and inside the service that works generally we have to import normally
   the service following the full path for the file.
+- With the useValue we only assign the name into the provide property and the value to useValue
+  that provider only will be available and injectable inside the services of that module.
+- With the useFactory we assing the `provide` property for the name, `useFactory` for a function
+  that will return something that can be asynchronous, if we need something inside that function
+  like a library like `HttpService` we can also set the property `inject` to inject that service
+  then in the args of the function that is inside the useFactory we receive that injection
+  `http: HttpService` and that will be available.
+- With the global module we have to set the `Global` decorator for the module, in the providers
+  i have to provide the `useValue`, `useFactory` and then we have to export that customized
+  provider with the name that was put inside the `provide` property, then in all the services
+  we can `Inject` decorator inside the constructor. 
 
 ## Git commands
 - to clone a branch `git clone -b name url` to clone only the brach.

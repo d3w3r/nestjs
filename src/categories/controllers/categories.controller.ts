@@ -22,6 +22,10 @@ import {
 export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
 
+  @Get('connection')
+  getConnection() {
+    return this.categoriesService.getConnection();
+  }
   @Get()
   getCategories(
     @Query('limit', ParseIntPipe) limit = 10,

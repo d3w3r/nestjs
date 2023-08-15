@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 
 import { Category } from './../entities/categories.entity';
 import {
@@ -12,6 +12,8 @@ export class CategoriesService {
   private categories: Category[] = [];
   private counter = 1;
 
+  constructor(@Inject('remoteconn') private remoteconn: string) {}
+
   private _getIndex(id: number) {
     return this.categories.findIndex((c) => c.id === id);
   }
@@ -19,6 +21,9 @@ export class CategoriesService {
     this.counter++;
   }
 
+  getConnection() {
+    return `Connection: ${this.remoteconn}`;
+  }
   getAll(limit: number, offset: number) {
     const end = offset + limit;
     const list = this.categories.slice(offset, end);

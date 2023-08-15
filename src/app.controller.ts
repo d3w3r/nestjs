@@ -13,6 +13,15 @@ export class AppController {
     return message;
     // return this.appService.getHello();
   }
+  @Get('apikey')
+  getApiKey(): string {
+    return this.appService.getApiKey();
+  }
+
+  @Get('tasks')
+  getTasks(): unknown {
+    return this.appService.getTasks();
+  }
 
   @Get('new')
   newPlace(): string {

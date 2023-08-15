@@ -22,6 +22,11 @@ import {
 export class BrandsController {
   constructor(private brandsService: BrandsService) {}
 
+  @Get('connection')
+  getConnection() {
+    return this.brandsService.getConnection();
+  }
+
   @Get()
   getAll(
     @Query('limit', ParseIntPipe) limit = 10,
