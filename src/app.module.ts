@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
+import { ConfigModule } from '@nestjs/config';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -11,6 +12,8 @@ import { CustomersModule } from './customers/customers.module';
 import { CategoriesModule } from './categories/categories.module';
 import { BrandsModule } from './brands/brands.module';
 import { DatabaseModule } from './database/database.module';
+import { environemts } from './environments';
+import config from './config';
 
 const API_KEY = 'kashdfh123fhk23jk2';
 
@@ -24,6 +27,11 @@ const API_KEY = 'kashdfh123fhk23jk2';
     BrandsModule,
     HttpModule,
     DatabaseModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: environemts[process.env.NODE_ENV] || '.env',
+      load: [config],
+    }),
   ],
   controllers: [AppController],
   providers: [

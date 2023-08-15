@@ -17,6 +17,10 @@ export class AppController {
   getApiKey(): string {
     return this.appService.getApiKey();
   }
+  @Get('envvars')
+  getEnvVars() {
+    return this.appService.getEnvVars();
+  }
 
   @Get('tasks')
   getTasks(): unknown {

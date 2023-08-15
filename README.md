@@ -93,6 +93,16 @@
   i have to provide the `useValue`, `useFactory` and then we have to export that customized
   provider with the name that was put inside the `provide` property, then in all the services
   we can `Inject` decorator inside the constructor. 
+- With the `configModule` we have first to add them into the imports of the main module at the
+  same that a configuration must be provided `.forRoot()` some parameters like `path...`, `global`,
+  `load` allows the right configuration and working for the module, first we create a file that
+  has the envnames for files that object only will have the purpose the provide the right name
+  with the actual process.env.NODE_ENV value, then we create config file general to export a 
+  `registerAs(key, function)` config object that takes the name and a function that returns an 
+  object to configure the mirroring env vars in a way more easy to use that is an object, then
+  we have to import that with an `inject(config.KEY) private name:ConfigType<typeof config>` that
+  is all that we have to use, or we can use the simply `configService` and use `configService.get()`
+  but the first aproach is better becuase has only a specific set of vars and no-one can be invented.
 
 ## Git commands
 - to clone a branch `git clone -b name url` to clone only the brach.
