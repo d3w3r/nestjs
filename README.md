@@ -103,6 +103,9 @@
   we have to import that with an `inject(config.KEY) private name:ConfigType<typeof config>` that
   is all that we have to use, or we can use the simply `configService` and use `configService.get()`
   but the first aproach is better becuase has only a specific set of vars and no-one can be invented.
+- Another important configuration is to validate the schema of the enviroment variables for example
+  we use that into the `ConfigModule.forRoot({ global: true, pathEnvFile: path, load: [config], validationSchema})` with that and using `Joi.object({ property: Joi.number().required() })` we
+  validate the full schema before execution.
 
 ## Git commands
 - to clone a branch `git clone -b name url` to clone only the brach.

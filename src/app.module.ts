@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import { ConfigModule } from '@nestjs/config';
+import * as Joi from 'joi';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -31,6 +32,11 @@ const API_KEY = 'kashdfh123fhk23jk2';
       isGlobal: true,
       envFilePath: environemts[process.env.NODE_ENV] || '.env',
       load: [config],
+      validationSchema: Joi.object({
+        X_API_KEY: Joi.number().required(),
+        DATABASE_NAME: Joi.string().required(),
+        DATABASE_PORT: Joi.number().required(),
+      }),
     }),
   ],
   controllers: [AppController],
