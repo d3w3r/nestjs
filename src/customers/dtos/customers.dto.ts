@@ -1,6 +1,6 @@
-import { Customer } from './../entities/customers.entity';
+import { OmitType, PartialType } from '@nestjs/swagger';
 
-import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { Customer } from './../entities/customers.entity';
 
 export class CreateCustomerDto extends OmitType(Customer, ['id']) {}
 export class UpdateCustomerDto extends CreateCustomerDto {}
