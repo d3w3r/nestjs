@@ -1,4 +1,5 @@
-import { OmitType, PartialType } from '@nestjs/mapped-types';
+// import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { OmitType, PartialType } from '@nestjs/swagger';
 
 import { User } from '../entities/users.entity';
 import { Customer } from './../../customers/entities/customers.entity';

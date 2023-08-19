@@ -1,8 +1,9 @@
+// import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { OmitType, PartialType } from '@nestjs/swagger';
+
 import { Order } from './../entities/orders.entity';
 import { Product } from './../../products/entities/products.entity';
 import { User } from './../../users/entities/users.entity';
-
-import { OmitType, PartialType } from '@nestjs/mapped-types';
 
 export class CreateOrderDto extends OmitType(Order, ['id', 'date']) {}
 export class UpdateOrderDto extends CreateOrderDto {}

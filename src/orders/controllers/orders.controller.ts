@@ -10,6 +10,7 @@ import {
   Delete,
   ParseIntPipe,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 
 import { OrdersService } from '../services/orders.service';
 import {
@@ -18,6 +19,7 @@ import {
   ModifyOrderDto,
 } from './../dtos/orders.dto';
 
+@ApiTags('Orders')
 @Controller('orders')
 export class OrdersController {
   constructor(private ordersService: OrdersService) {}

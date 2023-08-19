@@ -102,6 +102,15 @@
   only the importation like `import config from './config'`.
 - To validate the schema of the configuration we can use the module `joi` to valida from
   the configuration in the app.module the config schema. 
+- The documentation is easy of implement with this steps:
+  1. import the module `@nestjs/swagger`.
+  2. add the configuration into the `main.ts` before launch the server into a port, this alredy start
+    the documentation.
+  3. Into the models i have to change the `@nestjs/mapped-types` by `@nestjs/swagger` to
+    interpret the data automatically.
+  4. Into the `nestjs-cli.json` configure the `compilerOptions: {}` adding the `pluggins` to the new module.
+  5. Then we can use the api decorators inside controllers, models, some of them are `ApiOperation`,
+    `ApiProperty`...
 
 ## Git commands
 - to clone a branch `git clone -b name url` to clone only the brach.
