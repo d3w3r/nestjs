@@ -37,9 +37,10 @@ export class UsersController {
   getConfigVars() {
     // return `This is apikey value: ${this.configService.get('X_API_KEY')}`;
     const apikey = this.configService.apikey;
-    const dbname = this.configService.database.name;
-    const dbport = this.configService.database.port;
-    return `key: ${apikey}, dbname: ${dbname}, dbport: ${dbport}`;
+    // const dbname = this.configService.database.name;
+    // const dbport = this.configService.database.port;
+    // return `key: ${apikey}, dbname: ${dbname}, dbport: ${dbport}`;
+    return '';
   }
 
   @ApiOperation({ summary: 'Get one user by id' })

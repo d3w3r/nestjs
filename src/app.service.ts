@@ -1,16 +1,26 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Client } from 'pg';
+import util from 'util';
 
 @Injectable()
 export class AppService {
   constructor(
     @Inject('X_API_KEY') private apikey: string,
+    @Inject('PG') private clientPg: Client,
     @Inject('TASKS') private tasks,
     private configService: ConfigService,
   ) {}
 
-  getHello(): string {
-    return `Hello World! general api key ${this.apikey}`;
+  getHello() {
+    return new Promise((resolve, reject) => {
+      const querystr = 'SELECT * FROM tasks';
+
+      this.clientPg.query(querystr, (err, res) => {
+        if (err) reject(err);
+        else resolve(res.rows);
+      });
+    });
   }
 
   getTasks() {

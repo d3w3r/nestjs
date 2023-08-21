@@ -112,6 +112,20 @@
   5. Then we can use the api decorators inside controllers, models, some of them are `ApiOperation`,
     `ApiProperty`...
 
+## Commands for docker
+
+- `docker-compose up -d servicename` to launch the service of the docker compose
+- `docker-compose ps` to list all the services
+- `docker-compose down` to strip down the service
+- `docker-compose logs -f servicename` to show the log register for the service
+- `docker-compose exec servicename bash` to launch a console for the service
+- `docker ps` to show the whole services on the system
+- `docker inspect` to show more information about the system
+
+## Commands for postgres
+
+- `psql -h hostname -d databasename -U username` connect to the server
+
 ## Git commands
 - to clone a branch `git clone -b name url` to clone only the brach.
 
