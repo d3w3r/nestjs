@@ -33,7 +33,7 @@ export class ProductsController {
     @Query('offset', new ParseIntPipe({ optional: true })) offset = 0,
     @Query('verbose', new ParseBoolPipe({ optional: true })) verbose = false,
   ) {
-    return this.productsService.findAll(verbose /*limit, offset*/);
+    return this.productsService.findAll(verbose, limit, offset);
   }
 
   @Get(':id')

@@ -26,13 +26,13 @@ export class CategoriesController {
 
   @Get()
   getCategories(
-    @Query('limit', ParseIntPipe) limit = 10,
-    @Query('offset', ParseIntPipe) offset = 0,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
+    @Query('offset', new ParseIntPipe({ optional: true })) offset = 0,
   ) {
     return this.categoriesService.getAll(limit, offset);
   }
   @Get(':id')
-  getCategory(@Param('id', ParseIntPipe) id: number) {
+  getCategory(@Param('id', new ParseIntPipe({ optional: true })) id: number) {
     return this.categoriesService.getOne(id);
   }
   @Get(':cid/products')
@@ -45,6 +45,7 @@ export class CategoriesController {
 
     return { message };
   }
+  /*
   @Post()
   create(@Body() payload: CreateCategoryDto) {
     return this.categoriesService.createOne(payload);
@@ -67,4 +68,5 @@ export class CategoriesController {
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.categoriesService.removeOne(id);
   }
+  */
 }

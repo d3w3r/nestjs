@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { Brand } from './../entities/brands.entity';
 import {
@@ -9,26 +11,27 @@ import {
 
 @Injectable()
 export class BrandsService {
-  private brands: Brand[] = [];
-  private counter = 1;
+  constructor(@InjectRepository(Brand) private brandRepo: Repository<Brand>) {}
 
-  private getIndex(id: number) {
-    return this.brands.findIndex((b) => b.id === id);
-  }
+  // private getIndex(id: number) {
+  //   return this.brands.findIndex((b) => b.id === id);
+  // }
 
-  getAll(limit: number, offset: number) {
-    const end = limit + offset;
-    const list = this.brands.slice(offset, end);
-    if (!list) throw new NotFoundException('Brands not found');
+  async getAll(limit: number, offset: number) {
+    const list = await this.brandRepo.find({ take: limit, skip: offset });
+
+    if (!list.length) throw new NotFoundException('Brands not found');
 
     return list;
   }
-  getOne(id: number) {
-    const brand = this.brands.find((b) => b.id === id);
+  async getOne(id: number) {
+    const brand = await this.brandRepo.find({ where: { id } });
+
     if (!brand) throw new NotFoundException(`Brand ${id} not found`);
 
-    return brand;
+    return brand[0];
   }
+  /*
   createOne(payload: CreateBrandDto) {
     const brandNew = {
       id: this.counter,
@@ -71,4 +74,5 @@ export class BrandsService {
 
     return this.brands.splice(index, TO_REMOVE);
   }
+  */
 }

@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { Category } from './../entities/categories.entity';
 import {
@@ -9,29 +11,34 @@ import {
 
 @Injectable()
 export class CategoriesService {
-  private categories: Category[] = [];
-  private counter = 1;
+  constructor(
+    @InjectRepository(Category) private categoryRepo: Repository<Category>,
+  ) {}
 
+  /*
   private _getIndex(id: number) {
     return this.categories.findIndex((c) => c.id === id);
   }
   private _updateCounter() {
     this.counter++;
   }
+  */
 
-  getAll(limit: number, offset: number) {
-    const end = offset + limit;
-    const list = this.categories.slice(offset, end);
-    if (list.length === 0) throw new NotFoundException(`Categories not found`);
+  async getAll(limit: number, offset: number) {
+    const list = await this.categoryRepo.find({ take: limit, skip: offset });
+
+    if (!list.length) throw new NotFoundException(`Categories not found`);
 
     return list;
   }
-  getOne(id: number) {
-    const category = this.categories.find((c) => c.id === id);
+  async getOne(id: number) {
+    const category = await this.categoryRepo.find({ where: { id } });
+
     if (!category) throw new NotFoundException(`Category ${id} not found`);
 
-    return category;
+    return category[0];
   }
+  /*
   createOne(payload: CreateCategoryDto) {
     const categoryNew: Category = {
       id: this.counter,
@@ -75,4 +82,5 @@ export class CategoriesService {
 
     return this.categories.splice(index, amount);
   }
+  */
 }

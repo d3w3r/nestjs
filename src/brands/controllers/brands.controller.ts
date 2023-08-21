@@ -26,40 +26,40 @@ export class BrandsController {
 
   @Get()
   getAll(
-    @Query('limit', ParseIntPipe) limit = 10,
-    @Query('offset', ParseIntPipe) offset = 0,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
+    @Query('offset', new ParseIntPipe({ optional: true })) offset = 0,
   ) {
     return this.brandsService.getAll(limit, offset);
   }
 
   @Get(':id')
-  getOne(@Param('id', ParseIntPipe) id: number) {
+  getOne(@Param('id', new ParseIntPipe({ optional: true })) id: number) {
     return this.brandsService.getOne(id);
   }
 
-  @Post()
-  create(@Body() payload: CreateBrandDto) {
-    return this.brandsService.createOne(payload);
-  }
+  // @Post()
+  // create(@Body() payload: CreateBrandDto) {
+  //   return this.brandsService.createOne(payload);
+  // }
 
-  @Put(':id')
-  change(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateBrandDto,
-  ) {
-    return this.brandsService.updateOne(id, payload);
-  }
+  // @Put(':id')
+  // change(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Body() payload: UpdateBrandDto,
+  // ) {
+  //   return this.brandsService.updateOne(id, payload);
+  // }
 
-  @Patch(':id')
-  modify(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() payload: ModifyBrandDto,
-  ) {
-    return this.brandsService.modifyOne(id, payload);
-  }
+  // @Patch(':id')
+  // modify(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Body() payload: ModifyBrandDto,
+  // ) {
+  //   return this.brandsService.modifyOne(id, payload);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.brandsService.removeOne(id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id', ParseIntPipe) id: number) {
+  //   return this.brandsService.removeOne(id);
+  // }
 }
