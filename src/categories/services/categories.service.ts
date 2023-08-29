@@ -15,15 +15,6 @@ export class CategoriesService {
     @InjectRepository(Category) private categoryRepo: Repository<Category>,
   ) {}
 
-  /*
-  private _getIndex(id: number) {
-    return this.categories.findIndex((c) => c.id === id);
-  }
-  private _updateCounter() {
-    this.counter++;
-  }
-  */
-
   async getAll(limit: number, offset: number) {
     const list = await this.categoryRepo.find({ take: limit, skip: offset });
 

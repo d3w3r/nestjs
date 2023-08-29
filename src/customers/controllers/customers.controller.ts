@@ -34,24 +34,24 @@ export class CustomersController {
     @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
     @Query('offset', new ParseIntPipe({ optional: true })) offset = 0,
   ) {
-    return this.customersService.getAll();
+    return this.customersService.getAll(offset, limit);
   }
   @Get(':id')
   getOne(@Param('id', ParseIntPipe) id: number) {
     return this.customersService.getOne(id);
   }
-  @Get(':id/orders')
-  getOrders(
-    @Param('id', ParseIntPipe) id: number,
-    @Query('limit', ParseIntPipe) limit = 10,
-    @Query('offset', ParseIntPipe) offset = 0,
-    @Res() res: Response,
-  ) {
-    const message = `Customer ${id} with orders | limit ${limit}, offset ${offset}`;
+  // @Get(':id/orders')
+  // getOrders(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Query('limit', ParseIntPipe) limit = 10,
+  //   @Query('offset', ParseIntPipe) offset = 0,
+  //   @Res() res: Response,
+  // ) {
+  //   const message = `Customer ${id} with orders | limit ${limit}, offset ${offset}`;
 
-    // return { message };
-    return res.status(200).json({ message });
-  }
+  //   // return { message };
+  //   return res.status(200).json({ message });
+  // }
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() payload: CreateCustomerDto, @Req() req: Request) {

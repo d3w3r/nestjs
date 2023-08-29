@@ -8,7 +8,9 @@ import {
   Post,
   Body,
   ParseIntPipe,
+  ParseBoolPipe,
   Inject,
+  Query,
 } from '@nestjs/common';
 // import { ConfigService } from '@nestjs/config';
 import { ConfigType } from '@nestjs/config';
@@ -32,6 +34,12 @@ export class UsersController {
     @Inject(config.KEY) private configService: ConfigType<typeof config>,
   ) {}
 
+  @ApiOperation({ summary: 'Get all the users' })
+  @Get()
+  getAll() {
+    return this.usersService.getAll();
+  }
+
   @ApiOperation({ summary: 'Get the api key' })
   @Get('apikey')
   getConfigVars() {
@@ -45,8 +53,12 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Get one user by id' })
   @Get(':id')
-  getOne(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.getOne(id);
+  getOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('verbose', new ParseBoolPipe({ optional: true }))
+    verbose: boolean,
+  ) {
+    return this.usersService.getOne(id, verbose);
   }
 
   @ApiOperation({ summary: 'Create one user' })

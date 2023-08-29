@@ -14,15 +14,15 @@ const X_API_KEY_PROD = 'ksdh12hhsdk2h9';
     TypeOrmModule.forRootAsync({
       inject: [config.KEY],
       useFactory: async (configService: ConfigType<typeof config>) => {
-        const { pg } = configService.database;
+        const { mysql } = configService.database;
 
         return {
-          type: 'postgres',
-          host: pg.host,
-          port: pg.port,
-          username: pg.user,
-          password: pg.password,
-          database: pg.db,
+          type: 'mysql',
+          host: mysql.host,
+          port: mysql.port,
+          username: mysql.user,
+          password: mysql.password,
+          database: mysql.db,
           synchronize: true,
           autoLoadEntities: true,
         };
@@ -37,18 +37,19 @@ const X_API_KEY_PROD = 'ksdh12hhsdk2h9';
     {
       provide: 'PG',
       useFactory: async (configService: ConfigType<typeof config>) => {
-        const { pg } = configService.database;
-        const client = new Client({
-          user: pg.user,
-          host: pg.host,
-          port: pg.port,
-          database: pg.db,
-          password: pg.password,
-        });
+        const { mysql } = configService.database;
+        // const client = new Client({
+        //   user: mysql.user,
+        //   host: mysql.host,
+        //   port: mysql.port,
+        //   database: mysql.db,
+        //   password: mysql.password,
+        // });
 
-        await client.connect();
+        // await client.connect();
 
-        return client;
+        // return client;
+        return {};
       },
       inject: [config.KEY],
     },

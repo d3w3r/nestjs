@@ -9,6 +9,7 @@ import {
   Patch,
   Delete,
   ParseIntPipe,
+  ParseBoolPipe,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -30,13 +31,17 @@ export class OrdersController {
     @Query('offset', new ParseIntPipe({ optional: true })) offset = 0,
     @Query('dateIni', new ParseIntPipe({ optional: true })) dateIni: number,
     @Query('dateEnd', new ParseIntPipe({ optional: true })) dateEnd: number,
+    @Query('verbose', new ParseBoolPipe({ optional: true })) verbose: boolean,
   ) {
-    return this.ordersService.getAll();
+    return this.ordersService.getAll(offset, limit, verbose);
   }
 
   @Get(':id')
-  getOne(@Param('id', ParseIntPipe) id: number) {
-    return this.ordersService.getOne(id);
+  getOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('verbose', new ParseBoolPipe({ optional: true })) verbose: boolean,
+  ) {
+    return this.ordersService.getOne(id, verbose);
   }
 
   @Get(':id/products')

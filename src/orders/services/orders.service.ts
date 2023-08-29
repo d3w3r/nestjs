@@ -1,6 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { Order } from './../entities/orders.entity';
+import { User } from './../../users/entities/users.entity';
 import { Product } from './../../products/entities/products.entity';
 import { ProductsService } from './../../products/services/products.service';
 import { UsersService } from './../../users/services/users.service';
@@ -13,121 +16,153 @@ import {
 
 @Injectable()
 export class OrdersService {
-  private orders: Order[] = [];
-  private counter = 1;
-
   constructor(
     private usersService: UsersService,
     private productsService: ProductsService,
+    @InjectRepository(Order) private ordersRepo: Repository<Order>,
   ) {}
 
-  private _getUser(id: number) {
+  private async _getUser(id: number) {
     let user;
     try {
-      user = this.usersService.getOne(id);
+      user = await this.usersService.getOne(id, true);
     } catch (err) {}
 
     return user;
   }
-  private _getProducts(ids: number[]) {
-    const products: Product[] = [];
+  private async _getProducts(ids: number[]) {
+    const productsPromises = [];
 
     for (const id of ids) {
-      let product;
-      try {
-        product = this.productsService.findOne(id, true);
-      } catch (err) {
-        continue;
-      }
-
-      products.push(product);
+      productsPromises.push(this.productsService.findOne(id, true));
     }
+
+    const resolved = await Promise.allSettled(productsPromises);
+    const products = resolved
+      .map((e) => {
+        if ('value' in e) return e.value;
+      })
+      .filter((e) => e);
 
     return products;
   }
-  private _getOne(id: number) {
-    const order = this.orders.find((e) => e.id === id);
+  private async _getOneVerbose(order: Order) {
+    const { userID, productsID, ...rest } = order;
+
+    const user = await this._getUser(userID);
+    const products = await this._getProducts(productsID);
+
+    const orderVerbose = { ...rest, user, products };
+
+    return orderVerbose;
+  }
+  private async _getManyVerbose(orders: Order[]) {
+    const toResolve = [];
+    orders.forEach(async (e) => {
+      toResolve.push(this._getOneVerbose(e));
+    });
+
+    const resolved = await Promise.allSettled(toResolve);
+    const ordersVerbose = resolved.map((e) => {
+      if ('value' in e) return e.value;
+    });
+
+    return ordersVerbose;
+  }
+  private async _evalExistUserAndProducts(order: Order) {
+    const { userID, productsID } = order;
+
+    const user = await this._getUser(userID);
+
+    if (!user) throw new NotFoundException(`User not found for the order`);
+
+    const products = await this._getProducts(productsID);
+
+    if (products.length === 0)
+      throw new NotFoundException(`Products not found for the order`);
+
+    const avaliableProducts = products.map((e) => e.id);
+
+    return { avaliableProducts };
+  }
+
+  async getAll(offset: number, limit: number, verbose = false) {
+    const orders = await this.ordersRepo.find({ skip: offset, take: limit });
+
+    if (orders.length === 0) throw new NotFoundException('Orders not found');
+
+    if (!verbose) return orders;
+    else return this._getManyVerbose(orders);
+  }
+  async getOne(id: number, verbose = false) {
+    const order = await this.ordersRepo.findOne({ where: { id } });
+
     if (!order) throw new NotFoundException(`Order ${id} not found`);
+
+    if (!verbose) return order;
+    else {
+      const orderVerbose = await this._getOneVerbose(order);
+      return orderVerbose;
+    }
+  }
+  async createOne(payload: CreateOrderDto) {
+    const { userID, productsID } = payload;
+
+    const user = await this._getUser(userID);
+    if (!user)
+      throw new NotFoundException(`The user for that order wasn't found`);
+
+    const products = await this._getProducts(productsID);
+    if (products.length === 0)
+      throw new NotFoundException(`None of the products specified was found`);
+
+    const productsFound = products.map((e) => {
+      if ('id' in e) return e.id;
+    });
+
+    const newPayload = {
+      ...payload,
+      productsID: productsFound,
+    };
+
+    const orderToCreate = this.ordersRepo.create(newPayload);
+
+    return this.ordersRepo.save(orderToCreate);
+  }
+  async updateOne(id: number, payload: UpdateOrderDto) {
+    const order = await this.getOne(id);
+
+    if (!order) throw new NotFoundException(`The order ${id} wasn't found`);
+
+    const merged = this.ordersRepo.merge(order as Order, payload);
+    await this.ordersRepo.update(id, merged);
+
+    return merged;
+  }
+  async modifyOne(id: number, payload: ModifyOrderDto) {
+    const order = await this.getOne(id);
+
+    if (!order) throw new NotFoundException(`The order ${id} wasn't found`);
+
+    const merged = this.ordersRepo.merge(order as Order, payload);
+    await this.ordersRepo.update(id, merged);
+
+    return merged;
+  }
+  async removeOne(id: number) {
+    const order = await this.getOne(id);
+
+    if (!order) throw new NotFoundException(`Order ${id} not found`);
+
+    await this.ordersRepo.delete(id);
 
     return order;
   }
-
-  getAll(): ReviewOrderDto[] {
-    const list = this.orders;
-    if (list.length === 0) throw new NotFoundException('Orders not found');
-
-    const data = list.map((e) => {
-      const { userID, productsID, ...copied } = e;
-
-      const user = this._getUser(userID);
-      const products = this._getProducts(productsID);
-
-      return { ...copied, user, products };
-    });
-
-    return data;
-  }
-  getOne(id: number): ReviewOrderDto {
-    const order = this.orders.find((e) => e.id === id);
-    if (!order) throw new NotFoundException(`Order ${id} not found`);
-
-    const { userID, productsID, ...copied } = order;
-    const user = this._getUser(userID);
-    const products = this._getProducts(productsID);
-
-    const result = { ...copied, user, products };
-
-    return result;
-  }
   getAllProducts(id: number) {
-    const order = this.getOne(id);
-    if (order) throw new NotFoundException(`Order ${id} not found`);
+    // const order = this.getOne(id);
+    // if (order) throw new NotFoundException(`Order ${id} not found`);
 
-    return order.products;
-  }
-  createOne(payload: CreateOrderDto) {
-    const newOrder: Order = {
-      id: this.counter,
-      date: new Date(),
-      ...payload,
-    };
-
-    this.orders.push(newOrder);
-    this.counter++;
-
-    return newOrder;
-  }
-  updateOne(id: number, payload: UpdateOrderDto) {
-    const index = this.orders.findIndex((e) => e.id === id);
-    const order = this._getOne(id);
-    if (!order) throw new NotFoundException(`Order ${id} not found`);
-
-    const orderUpdate: Order = {
-      id: order.id,
-      date: new Date(),
-      ...payload,
-    };
-
-    this.orders[index] = orderUpdate;
-    return orderUpdate;
-  }
-  modifyOne(id: number, payload: ModifyOrderDto) {
-    const index = this.orders.findIndex((e) => e.id === id);
-    const order = this._getOne(id);
-    if (!order) throw new NotFoundException(`Order ${id} not found`);
-
-    const orderModify: Order = {
-      ...order,
-      ...payload,
-    };
-
-    this.orders[index] = orderModify;
-    return orderModify;
-  }
-  removeOne(id: number) {
-    const index = this.orders.findIndex((e) => e.id === id);
-    if (index === -1) throw new NotFoundException(`Order ${id} not found`);
-
-    return this.orders.splice(index, 1);
+    // return order.products;
+    return {};
   }
 }

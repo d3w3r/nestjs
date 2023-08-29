@@ -50,8 +50,6 @@ export class AppController {
   @Get('/expresshandled')
   handledManually(@Res() response: Response) {
     const message = 'Default message';
-    // console.log(response);
     response.status(HttpStatus.OK).send(message);
-    // return message;
   }
 }

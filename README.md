@@ -121,6 +121,10 @@
 - `docker-compose exec servicename bash` to launch a console for the service
 - `docker ps` to show the whole services on the system
 - `docker inspect` to show more information about the system
+- `docker run --name name -p porthost:portcontainer image` this will create the docker image.
+- `docker run --name name -e environmentvar -p portHost:portContainer image` this will create an image.
+- `docker stop containername` to stop the container.
+- `docker ps --all` to list all the containers.
 
 ## Commands for postgres
 
