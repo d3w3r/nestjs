@@ -22,7 +22,7 @@ export class UsersService {
   ) {}
 
   async getAll() {
-    const users = await this.userRepo.find();
+    const users = await this.userRepo.find({ relations: ['customerID'] });
 
     if (users.length === 0) throw new NotFoundException(`Users not found`);
 
@@ -34,8 +34,8 @@ export class UsersService {
     if (!user) throw new NotFoundException(`User ${id} not found`);
 
     if (verbose) {
-      const { customerID, ...userCopy } = user;
-      const customer = await this.customersService.getOne(customerID);
+      const { customerId, ...userCopy } = user;
+      const customer = await this.customersService.getOne(customerId);
 
       const newUser = {
         ...userCopy,
@@ -47,7 +47,7 @@ export class UsersService {
 
     return user;
   }
-  async create(payload: CreateUserDto) {
+  async create(payload) {
     const { customerID } = payload;
 
     const customer = await this.customersService.getOne(customerID);
@@ -56,6 +56,8 @@ export class UsersService {
       throw new NotFoundException(
         `Customer ${customerID} in the user doesn't exist`,
       );
+
+    payload.customer = customer;
 
     const customerCreated = this.userRepo.create(payload);
 
@@ -66,13 +68,13 @@ export class UsersService {
 
     if (!user) throw new NotFoundException(`User ${id} not found`);
 
-    const { customerID } = payload;
+    const { customerId } = payload;
 
-    const customer = await this.customersService.getOne(customerID);
+    const customer = await this.customersService.getOne(customerId);
 
     if (!customer)
       throw new NotFoundException(
-        `Customer ${customerID} in the user doesn't exist`,
+        `Customer ${customerId} in the user doesn't exist`,
       );
 
     const userUpdate = this.userRepo.merge(user as User, payload);
@@ -85,13 +87,13 @@ export class UsersService {
 
     if (!user) throw new NotFoundException(`User ${id} not found`);
 
-    const { customerID } = payload;
+    const { customerId } = payload;
 
-    const customer = await this.customersService.getOne(customerID);
+    const customer = await this.customersService.getOne(customerId);
 
     if (!customer)
       throw new NotFoundException(
-        `Customer ${customerID} in the user doesn't exist`,
+        `Customer ${customerId} in the user doesn't exist`,
       );
 
     const userUpdate = this.userRepo.merge(user as User, payload);

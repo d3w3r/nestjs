@@ -7,6 +7,6 @@ import { Customer } from './../../customers/entities/customers.entity';
 export class CreateUserDto extends OmitType(User, ['id']) {}
 export class UpdateUserDto extends CreateUserDto {}
 export class PatchUserDto extends PartialType(CreateUserDto) {}
-export class ReviewUserDto extends OmitType(User, ['customerID']) {
+export class ReviewUserDto extends OmitType(User, ['customerId']) {
   readonly customer: Customer;
 }

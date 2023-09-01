@@ -9,7 +9,7 @@ import { User } from './../../users/entities/users.entity';
 export class CreateOrderDto extends OmitType(Order, ['id', 'date']) {}
 export class UpdateOrderDto extends CreateOrderDto {}
 export class ModifyOrderDto extends PartialType(CreateOrderDto) {}
-export class ReviewOrderDto extends OmitType(Order, ['userID', 'productsID']) {
+export class ReviewOrderDto extends OmitType(Order, ['userId', 'productsID']) {
   @IsNotEmpty()
   readonly user: User;
 

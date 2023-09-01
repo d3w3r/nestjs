@@ -59,9 +59,9 @@ export class ProductsService {
   }
   private async _getFullInfo(products: Product[]) {
     const response = products.map(async (p) => {
-      const { brandID, categoriesID, ...copied } = p;
+      const { brandId, categoriesID, ...copied } = p;
 
-      const brand: Brand = await this._getBrand(brandID);
+      const brand: Brand = await this._getBrand(brandId);
       const categories: Category[] = await this._getCategories(categoriesID);
 
       return { ...copied, brand, categories };
@@ -78,15 +78,27 @@ export class ProductsService {
     limit: number,
     offset: number,
   ): Promise<ReviewProductDto[] | Product[]> {
-    const list = await this.productRepo.find({ skip: offset, take: limit });
-
-    if (!list.length) throw new NotFoundException(`Products not found`);
-
     if (verbose) {
-      const result = await this._getFullInfo(list);
-      return result;
+      const products = await this.productRepo.find({
+        skip: offset,
+        take: limit,
+        relations: ['brandId'],
+      });
+
+      if (products.length === 0)
+        throw new NotFoundException('There is not any products stored');
+
+      return products;
     } else {
-      return list;
+      const products = await this.productRepo.find({
+        skip: offset,
+        take: limit,
+      });
+
+      if (products.length === 0)
+        throw new NotFoundException('There is not any products stored');
+
+      return products;
     }
   }
   async findOne(
@@ -98,15 +110,27 @@ export class ProductsService {
     if (!product) throw new NotFoundException(`Product #${id} not found`);
 
     if (verbose) {
-      const result = await this._getFullInfo([product]);
-      return result[0];
+      const product = await this.productRepo.findOne({
+        where: { id },
+        relations: ['brandId'],
+      });
+
+      if (product === undefined)
+        throw new NotFoundException(`Product #${id} not found`);
+
+      return product;
     } else {
+      const product = await this.productRepo.findOne({ where: { id } });
+
+      if (product === undefined)
+        throw new NotFoundException(`Product #${id} not found`);
+
       return product;
     }
   }
-  async create(payload: CreateProductDto) {
-    const { categoriesID, brandID } = payload;
-    const brand = await this._getBrand(brandID);
+  async create(payload) {
+    const { categoriesID, brandId } = payload;
+    const brand = await this._getBrand(brandId);
     const { found, notFound } = await this._findCategories(categoriesID);
 
     if (!brand) throw new NotFoundException('The provided Brand was not found');
@@ -114,6 +138,8 @@ export class ProductsService {
       throw new NotFoundException(
         `None of the categories exist in the data ${notFound.toString()}`,
       );
+
+    payload.brand = brand;
 
     const template = {
       ...payload,

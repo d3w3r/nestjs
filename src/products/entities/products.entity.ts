@@ -8,8 +8,18 @@ import {
   ArrayNotEmpty,
   IsArray,
 } from 'class-validator';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+
+import { Brand } from './../../brands/entities/brands.entity';
 
 @Entity()
 export class Product {
@@ -59,7 +69,9 @@ export class Product {
   @IsPositive()
   @Column({ type: 'int' })
   @ApiProperty()
-  readonly brandID: number;
+  @OneToOne(() => Brand, (brand) => brand.productId)
+  @JoinColumn({ name: 'brandId' })
+  readonly brandId: number;
 
   @IsArray()
   @ArrayNotEmpty()
@@ -67,4 +79,10 @@ export class Product {
   @Column({ type: 'simple-array' })
   @ApiProperty()
   readonly categoriesID: number[];
+
+  @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  readonly createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  readonly updatedAt: Date;
 }

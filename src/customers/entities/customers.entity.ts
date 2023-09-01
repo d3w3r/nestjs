@@ -8,7 +8,8 @@ import {
   IsEmail,
   IsOptional,
 } from 'class-validator';
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { User } from 'src/users/entities/users.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
 
 @Entity()
 export class Customer {
@@ -35,4 +36,7 @@ export class Customer {
   @IsOptional()
   @Column({ type: 'varchar' })
   readonly email?: string;
+
+  @OneToOne(() => User, (user) => user.customerId)
+  readonly userId: User;
 }

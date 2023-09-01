@@ -14,15 +14,15 @@ const X_API_KEY_PROD = 'ksdh12hhsdk2h9';
     TypeOrmModule.forRootAsync({
       inject: [config.KEY],
       useFactory: async (configService: ConfigType<typeof config>) => {
-        const { mysql } = configService.database;
+        const { host, port, user, password, db } = configService.database.pg;
 
         return {
-          type: 'mysql',
-          host: mysql.host,
-          port: mysql.port,
-          username: mysql.user,
-          password: mysql.password,
-          database: mysql.db,
+          type: 'postgres',
+          host: host,
+          port: port,
+          username: user,
+          password: password,
+          database: db,
           synchronize: true,
           autoLoadEntities: true,
         };

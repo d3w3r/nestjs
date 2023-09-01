@@ -47,9 +47,9 @@ export class OrdersService {
     return products;
   }
   private async _getOneVerbose(order: Order) {
-    const { userID, productsID, ...rest } = order;
+    const { userId, productsID, ...rest } = order;
 
-    const user = await this._getUser(userID);
+    const user = await this._getUser(userId);
     const products = await this._getProducts(productsID);
 
     const orderVerbose = { ...rest, user, products };
@@ -70,9 +70,9 @@ export class OrdersService {
     return ordersVerbose;
   }
   private async _evalExistUserAndProducts(order: Order) {
-    const { userID, productsID } = order;
+    const { userId, productsID } = order;
 
-    const user = await this._getUser(userID);
+    const user = await this._getUser(userId);
 
     if (!user) throw new NotFoundException(`User not found for the order`);
 
@@ -95,17 +95,22 @@ export class OrdersService {
     else return this._getManyVerbose(orders);
   }
   async getOne(id: number, verbose = false) {
-    const order = await this.ordersRepo.findOne({ where: { id } });
+    // const order = await this.ordersRepo.findOne({ where: { id } });
 
-    if (!order) throw new NotFoundException(`Order ${id} not found`);
+    // if (!order) throw new NotFoundException(`Order ${id} not found`);
 
-    if (!verbose) return order;
-    else {
-      const orderVerbose = await this._getOneVerbose(order);
-      return orderVerbose;
+    if (!verbose) {
+      const order = await this.ordersRepo.findOne({ where: { id } });
+      return order;
+    } else {
+      const order = await this.ordersRepo.findOne({
+        where: { id },
+        relations: ['user'],
+      });
+      return order;
     }
   }
-  async createOne(payload: CreateOrderDto) {
+  async createOne(payload) {
     const { userID, productsID } = payload;
 
     const user = await this._getUser(userID);
@@ -119,6 +124,8 @@ export class OrdersService {
     const productsFound = products.map((e) => {
       if ('id' in e) return e.id;
     });
+
+    payload.user = user;
 
     const newPayload = {
       ...payload,

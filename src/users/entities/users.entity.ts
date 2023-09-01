@@ -8,7 +8,16 @@ import {
   Length,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
+
+import { Customer } from './../../customers/entities/customers.entity';
+import { Order } from './../../orders/entities/orders.entity';
 
 @Entity()
 export class User {
@@ -44,6 +53,11 @@ export class User {
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
-  @Column({ type: 'int' })
-  readonly customerID: number;
+  @Column({ type: 'int', nullable: true })
+  @OneToOne(() => Customer, (customer) => customer.userId)
+  @JoinColumn({ name: 'customerId' })
+  readonly customerId: number;
+
+  @OneToOne(() => Order, (order) => order.userId)
+  readonly order: number;
 }

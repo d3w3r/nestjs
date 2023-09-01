@@ -6,7 +6,15 @@ import {
   ArrayNotEmpty,
   IsDate,
 } from 'class-validator';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
+
+import { User } from './../../users/entities/users.entity';
 
 @Entity()
 export class Order {
@@ -18,14 +26,16 @@ export class Order {
 
   @IsNotEmpty()
   @IsDate()
-  @Column({ type: 'date' })
+  @Column({ type: 'date', default: () => 'CURRENT_TIMESTAMP' })
   readonly date: Date;
 
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
-  @Column({ type: 'int' })
-  readonly userID: number;
+  @Column({ type: 'int', nullable: true })
+  @OneToOne(() => User, (user) => user.order)
+  @JoinColumn({ name: 'userId' })
+  readonly userId: number;
 
   @IsArray()
   @ArrayNotEmpty()
