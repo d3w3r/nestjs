@@ -6,13 +6,7 @@ import {
   ArrayNotEmpty,
   IsDate,
 } from 'class-validator';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 import { User } from './../../users/entities/users.entity';
 
@@ -33,8 +27,7 @@ export class Order {
   @IsNumber()
   @IsPositive()
   @Column({ type: 'int', nullable: true })
-  @OneToOne(() => User, (user) => user.order)
-  @JoinColumn({ name: 'userId' })
+  @ManyToOne(() => User, (user) => user.order)
   readonly userId: number;
 
   @IsArray()

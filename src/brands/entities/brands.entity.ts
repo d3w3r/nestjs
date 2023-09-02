@@ -8,7 +8,7 @@ import {
   IsEmail,
   IsMobilePhone,
 } from 'class-validator';
-import { PrimaryGeneratedColumn, Entity, Column, OneToOne } from 'typeorm';
+import { PrimaryGeneratedColumn, Entity, Column, OneToMany } from 'typeorm';
 
 import { Product } from './../../products/entities/products.entity';
 
@@ -45,6 +45,6 @@ export class Brand {
   @Column({ type: 'varchar' })
   readonly address: string;
 
-  @OneToOne(() => Product, (product) => product.brandId)
+  @OneToMany(() => Product, (product) => product.brandId)
   readonly productId: number;
 }

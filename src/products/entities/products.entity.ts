@@ -14,7 +14,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToOne,
+  ManyToOne,
   JoinColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
@@ -69,8 +69,7 @@ export class Product {
   @IsPositive()
   @Column({ type: 'int' })
   @ApiProperty()
-  @OneToOne(() => Brand, (brand) => brand.productId)
-  @JoinColumn({ name: 'brandId' })
+  @ManyToOne(() => Brand, (brand) => brand.productId)
   readonly brandId: number;
 
   @IsArray()

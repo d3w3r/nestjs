@@ -12,6 +12,7 @@ import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
+  OneToMany,
   OneToOne,
   JoinColumn,
 } from 'typeorm';
@@ -58,6 +59,6 @@ export class User {
   @JoinColumn({ name: 'customerId' })
   readonly customerId: number;
 
-  @OneToOne(() => Order, (order) => order.userId)
+  @OneToMany(() => Order, (order) => order.userId)
   readonly order: number;
 }
