@@ -7,6 +7,8 @@ import {
   Length,
   ArrayNotEmpty,
   IsArray,
+  IsEmpty,
+  IsDate,
 } from 'class-validator';
 import {
   Entity,
@@ -16,10 +18,13 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { Brand } from './../../brands/entities/brands.entity';
+import { Category } from './../../categories/entities/categories.entity';
 
 @Entity()
 export class Product {
@@ -67,21 +72,23 @@ export class Product {
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
-  @Column({ type: 'int' })
   @ApiProperty()
-  @ManyToOne(() => Brand, (brand) => brand.productId)
-  readonly brandId: number;
+  @ManyToOne(() => Brand, (brand) => brand.product)
+  readonly brand: number;
 
+  @IsNotEmpty()
   @IsArray()
-  @ArrayNotEmpty()
   @IsNumber({}, { each: true })
-  @Column({ type: 'simple-array' })
   @ApiProperty()
-  readonly categoriesID: number[];
+  @ManyToMany(() => Category, (category) => category.products)
+  @JoinTable()
+  readonly categories: Category[];
 
+  @IsEmpty()
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   readonly createdAt: Date;
 
+  @IsEmpty()
   @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   readonly updatedAt: Date;
 }

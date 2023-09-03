@@ -45,11 +45,11 @@ export class CategoriesController {
 
     return { message };
   }
-  /*
   @Post()
   create(@Body() payload: CreateCategoryDto) {
     return this.categoriesService.createOne(payload);
   }
+  /*
   @Put(':id')
   change(
     @Param('id', ParseIntPipe) id: number,

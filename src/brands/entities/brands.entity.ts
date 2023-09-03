@@ -45,6 +45,6 @@ export class Brand {
   @Column({ type: 'varchar' })
   readonly address: string;
 
-  @OneToMany(() => Product, (product) => product.brandId)
-  readonly productId: number;
+  @OneToMany(() => Product, (product) => product.brand)
+  readonly product: number;
 }

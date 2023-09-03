@@ -59,12 +59,12 @@ export class ProductsService {
   }
   private async _getFullInfo(products: Product[]) {
     const response = products.map(async (p) => {
-      const { brandId, categoriesID, ...copied } = p;
+      const { brand, categories, ...copied } = p;
 
-      const brand: Brand = await this._getBrand(brandId);
-      const categories: Category[] = await this._getCategories(categoriesID);
+      const brandA: Brand = await this._getBrand(brand);
+      // const categories: Category[] = await this._getCategories(categoriesID);
 
-      return { ...copied, brand, categories };
+      return { ...copied, brandA, categories };
     });
 
     const results = await Promise.allSettled(response);
@@ -129,63 +129,68 @@ export class ProductsService {
     }
   }
   async create(payload) {
-    const { categoriesID, brandId } = payload;
-    const brand = await this._getBrand(brandId);
-    const { found, notFound } = await this._findCategories(categoriesID);
+    // const { categoriesID, brandId } = payload;
+    // const brand = await this._getBrand(brandId);
+    // const { found, notFound } = await this._findCategories(categoriesID);
 
-    if (!brand) throw new NotFoundException('The provided Brand was not found');
-    if (found.length === 0)
-      throw new NotFoundException(
-        `None of the categories exist in the data ${notFound.toString()}`,
-      );
+    // if (!brand) throw new NotFoundException('The provided Brand was not found');
+    // if (found.length === 0)
+    //   throw new NotFoundException(
+    //     `None of the categories exist in the data ${notFound.toString()}`,
+    //   );
+    const { brand: brandId, categories: categoriesId } = payload;
 
-    payload.brand = brand;
+    const brandObj = await this.brandsService.getOne(brandId);
+    const categoriesObj = await this.categoriesService.getAllById(categoriesId);
 
-    const template = {
-      ...payload,
-      categoriesID: found,
-    };
+    console.log(brandObj);
+    console.log(categoriesObj);
 
-    const product = this.productRepo.create(template);
+    payload.brand = brandObj;
+    payload.categories = categoriesObj;
+
+    const product = this.productRepo.create(payload);
     return this.productRepo.save(product);
   }
   async update(id: number, payload: UpdateProductDto) {
-    const { categoriesID: ids } = payload;
+    const { categories } = payload;
 
     const product = await this.findOne(id, false);
     if (!product) throw new NotFoundException(`Product ${id} not found`);
 
-    const { found, notFound } = await this._findCategories(ids);
-    if (found.length === 0)
-      throw new NotFoundException(
-        `None of the categories exist in the data ${notFound.toString()}`,
-      );
+    // const { found, notFound } = await this._findCategories(ids);
+    // if (found.length === 0)
+    //   throw new NotFoundException(
+    //     `None of the categories exist in the data ${notFound.toString()}`,
+    //   );
 
-    const newPayload = {
-      ...payload,
-      categoriesID: found,
-    };
+    // const newPayload = {
+    //   ...payload,
+    //   categoriesID: found,
+    // };
 
-    return this.productRepo.update(id, newPayload);
+    // return this.productRepo.update(id, newPayload);
+    return {};
   }
   async modify(id: number, payload: ModifyProductDto) {
-    const { categoriesID: ids } = payload;
+    const { categories } = payload;
 
     const product = await this.findOne(id, false);
     if (!product) throw new NotFoundException(`Product ${id} not found`);
 
-    const { found, notFound } = await this._findCategories(ids);
-    if (found.length === 0)
-      throw new NotFoundException(
-        `None of the categories exist in the data ${notFound.toString()}`,
-      );
+    // const { found, notFound } = await this._findCategories(ids);
+    // if (found.length === 0)
+    //   throw new NotFoundException(
+    //     `None of the categories exist in the data ${notFound.toString()}`,
+    //   );
 
-    const newPayload = {
-      ...payload,
-      categoriesID: found,
-    };
+    // const newPayload = {
+    //   ...payload,
+    //   categoriesID: found,
+    // };
 
-    return this.productRepo.update(id, newPayload);
+    // return this.productRepo.update(id, newPayload);
+    return {};
   }
   async remove(id: number) {
     const product = await this.findOne(id, null);

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { Category } from './../entities/categories.entity';
 import {
@@ -15,6 +15,10 @@ export class CategoriesService {
     @InjectRepository(Category) private categoryRepo: Repository<Category>,
   ) {}
 
+  async getAllById(ids: number[]) {
+    const categories = await this.categoryRepo.findBy({ id: In(ids) });
+    return categories;
+  }
   async getAll(limit: number, offset: number) {
     const list = await this.categoryRepo.find({ take: limit, skip: offset });
 
@@ -29,17 +33,13 @@ export class CategoriesService {
 
     return category[0];
   }
-  /*
-  createOne(payload: CreateCategoryDto) {
-    const categoryNew: Category = {
-      id: this.counter,
-      ...payload,
-    };
-    this.categories.push(categoryNew);
-    this._updateCounter();
+  async createOne(payload: CreateCategoryDto) {
+    const categoryC = this.categoryRepo.create(payload);
+    const result = await this.categoryRepo.save(categoryC);
 
-    return categoryNew;
+    return result;
   }
+  /*
   updateOne(id: number, payload: UpdateCategoryDto) {
     const index = this._getIndex(id);
     const categoryOld = this.getOne(id);

@@ -9,8 +9,8 @@ export class CreateProductDto extends OmitType(Product, ['id']) {}
 export class UpdateProductDto extends CreateProductDto {}
 export class ModifyProductDto extends PartialType(CreateProductDto) {}
 export class ReviewProductDto extends OmitType(Product, [
-  'brandId',
-  'categoriesID',
+  'brand',
+  // 'categoriesID',
 ]) {
   readonly brand: Brand;
   readonly categories: Category[];

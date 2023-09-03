@@ -37,10 +37,10 @@ export class BrandsController {
     return this.brandsService.getOne(id);
   }
 
-  // @Post()
-  // create(@Body() payload: CreateBrandDto) {
-  //   return this.brandsService.createOne(payload);
-  // }
+  @Post()
+  create(@Body() payload: CreateBrandDto) {
+    return this.brandsService.createOne(payload);
+  }
 
   // @Put(':id')
   // change(

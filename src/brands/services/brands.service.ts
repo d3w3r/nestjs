@@ -31,17 +31,13 @@ export class BrandsService {
 
     return brand[0];
   }
-  /*
-  createOne(payload: CreateBrandDto) {
-    const brandNew = {
-      id: this.counter,
-      ...payload,
-    };
-    this.brands.push(brandNew);
-    this.counter++;
+  async createOne(payload: CreateBrandDto) {
+    const brandC = this.brandRepo.create(payload);
+    const result = await this.brandRepo.save(brandC);
 
-    return brandNew;
+    return result;
   }
+  /*
   updateOne(id: number, payload: UpdateBrandDto) {
     const index = this.getIndex(id);
     if (index === -1) throw new NotFoundException(`Brand ${id} not found`);
