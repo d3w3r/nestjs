@@ -27,10 +27,8 @@ export class OrdersController {
 
   @Get()
   getAll(
-    @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
-    @Query('offset', new ParseIntPipe({ optional: true })) offset = 0,
-    @Query('dateIni', new ParseIntPipe({ optional: true })) dateIni: number,
-    @Query('dateEnd', new ParseIntPipe({ optional: true })) dateEnd: number,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit: number,
+    @Query('offset', new ParseIntPipe({ optional: true })) offset: number,
     @Query('verbose', new ParseBoolPipe({ optional: true })) verbose: boolean,
   ) {
     return this.ordersService.getAll(offset, limit, verbose);

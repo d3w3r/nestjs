@@ -20,10 +20,12 @@ import {
   JoinColumn,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { Brand } from './../../brands/entities/brands.entity';
+import { Order } from './../../orders/entities/orders.entity';
 import { Category } from './../../categories/entities/categories.entity';
 
 @Entity()
@@ -74,7 +76,7 @@ export class Product {
   @IsPositive()
   @ApiProperty()
   @ManyToOne(() => Brand, (brand) => brand.product)
-  readonly brand: number;
+  brand: Brand;
 
   @IsNotEmpty()
   @IsArray()
@@ -82,7 +84,7 @@ export class Product {
   @ApiProperty()
   @ManyToMany(() => Category, (category) => category.products)
   @JoinTable()
-  readonly categories: Category[];
+  categories: Category[];
 
   @IsEmpty()
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })

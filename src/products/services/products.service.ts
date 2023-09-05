@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import * as _ from 'lodash';
 
 import { Product } from './../entities/products.entity';
@@ -61,10 +61,10 @@ export class ProductsService {
     const response = products.map(async (p) => {
       const { brand, categories, ...copied } = p;
 
-      const brandA: Brand = await this._getBrand(brand);
+      // const brandA: Brand = await this._getBrand(brand);
       // const categories: Category[] = await this._getCategories(categoriesID);
 
-      return { ...copied, brandA, categories };
+      // return { ...copied, brandA, categories };
     });
 
     const results = await Promise.allSettled(response);
@@ -73,6 +73,14 @@ export class ProductsService {
     return parsed;
   }
 
+  async findAllById(ids: number[]) {
+    const products = await this.productRepo.findBy({ id: In(ids) });
+
+    if (products.length === 0)
+      throw new NotFoundException(`Products not found`);
+
+    return products;
+  }
   async findAll(
     verbose: boolean,
     limit: number,
@@ -82,7 +90,7 @@ export class ProductsService {
       const products = await this.productRepo.find({
         skip: offset,
         take: limit,
-        relations: ['brandId'],
+        relations: ['brand', 'categories'],
       });
 
       if (products.length === 0)
@@ -112,7 +120,7 @@ export class ProductsService {
     if (verbose) {
       const product = await this.productRepo.findOne({
         where: { id },
-        relations: ['brandId'],
+        relations: ['brand', 'categories'],
       });
 
       if (product === undefined)
@@ -129,22 +137,21 @@ export class ProductsService {
     }
   }
   async create(payload) {
-    // const { categoriesID, brandId } = payload;
-    // const brand = await this._getBrand(brandId);
-    // const { found, notFound } = await this._findCategories(categoriesID);
-
-    // if (!brand) throw new NotFoundException('The provided Brand was not found');
-    // if (found.length === 0)
-    //   throw new NotFoundException(
-    //     `None of the categories exist in the data ${notFound.toString()}`,
-    //   );
     const { brand: brandId, categories: categoriesId } = payload;
 
     const brandObj = await this.brandsService.getOne(brandId);
     const categoriesObj = await this.categoriesService.getAllById(categoriesId);
 
-    console.log(brandObj);
-    console.log(categoriesObj);
+    if (!brandObj) {
+      throw new NotFoundException(
+        `Brand ${payload.brandId} not found and cannot be assigned to the new Product`,
+      );
+    }
+    if (categoriesObj.length === 0) {
+      throw new NotFoundException(
+        `Categories ${payload.categoriesId} not found and cannot be assigned to the new Product`,
+      );
+    }
 
     payload.brand = brandObj;
     payload.categories = categoriesObj;
@@ -173,24 +180,39 @@ export class ProductsService {
     return {};
   }
   async modify(id: number, payload: ModifyProductDto) {
-    const { categories } = payload;
-
     const product = await this.findOne(id, false);
+
     if (!product) throw new NotFoundException(`Product ${id} not found`);
 
-    // const { found, notFound } = await this._findCategories(ids);
-    // if (found.length === 0)
-    //   throw new NotFoundException(
-    //     `None of the categories exist in the data ${notFound.toString()}`,
-    //   );
+    if ('brandId' in payload) {
+      const brandN = await this.brandsService.getOne(payload.brandId);
 
-    // const newPayload = {
-    //   ...payload,
-    //   categoriesID: found,
-    // };
+      if (!brandN) {
+        throw new NotFoundException(
+          `Brand ${payload.brandId} not found and cannot be assigned to Product ${id} `,
+        );
+      }
 
-    // return this.productRepo.update(id, newPayload);
-    return {};
+      payload.brand = brandN;
+    }
+    if ('categoriesId' in payload) {
+      const categoriesN = await this.categoriesService.getAllById(
+        payload.categoriesId,
+      );
+
+      if (categoriesN.length === 0) {
+        throw new NotFoundException(
+          `Categories ${payload.categoriesId} not found and cannot be assigned to Product ${id} `,
+        );
+      }
+
+      payload.categories = categoriesN;
+    }
+
+    const productM = this.productRepo.merge(product as Product, payload);
+    const productS = await this.productRepo.save(productM);
+
+    return productS;
   }
   async remove(id: number) {
     const product = await this.findOne(id, null);

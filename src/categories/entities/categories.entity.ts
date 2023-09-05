@@ -4,9 +4,16 @@ import {
   IsNotEmpty,
   IsString,
   Length,
+  IsEmpty,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  CreateDateColumn,
+} from 'typeorm';
 
 import { Product } from './../../products/entities/products.entity';
 
@@ -35,4 +42,12 @@ export class Category {
 
   @ManyToMany(() => Product, (product) => product.categories)
   readonly products: Product[];
+
+  @IsEmpty()
+  @CreateDateColumn({ type: 'timetz', default: () => 'CURRENT_TIMESTAMP' })
+  readonly createdAt: Date;
+
+  @IsEmpty()
+  @CreateDateColumn({ type: 'timetz', default: () => 'CURRENT_TIMESTAMP' })
+  readonly updatedAt: Date;
 }

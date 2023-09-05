@@ -15,6 +15,7 @@ import {
   OneToMany,
   OneToOne,
   JoinColumn,
+  ManyToMany,
 } from 'typeorm';
 
 import { Customer } from './../../customers/entities/customers.entity';
@@ -59,6 +60,6 @@ export class User {
   @JoinColumn({ name: 'customerId' })
   readonly customerId: number;
 
-  @OneToMany(() => Order, (order) => order.userId)
+  @ManyToMany(() => Order, (order) => order.user)
   readonly order: number;
 }

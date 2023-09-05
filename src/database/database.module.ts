@@ -25,6 +25,7 @@ const X_API_KEY_PROD = 'ksdh12hhsdk2h9';
           database: db,
           synchronize: true,
           autoLoadEntities: true,
+          logging: true,
         };
       },
     }),

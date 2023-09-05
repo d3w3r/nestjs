@@ -58,8 +58,8 @@ export class BrandsController {
   //   return this.brandsService.modifyOne(id, payload);
   // }
 
-  // @Delete(':id')
-  // remove(@Param('id', ParseIntPipe) id: number) {
-  //   return this.brandsService.removeOne(id);
-  // }
+  @Delete(':id')
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.brandsService.removeOne(id);
+  }
 }

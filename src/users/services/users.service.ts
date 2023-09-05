@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Order } from './../../orders/entities/orders.entity';
@@ -21,10 +21,19 @@ export class UsersService {
     @InjectRepository(User) private userRepo: Repository<User>,
   ) {}
 
-  async getAll() {
-    const users = await this.userRepo.find({ relations: ['customerID'] });
+  async getAll(limit = 10, offset = 0, verbose = false) {
+    const configuration: FindManyOptions = {
+      skip: offset,
+      take: limit,
+    };
 
-    if (users.length === 0) throw new NotFoundException(`Users not found`);
+    if (verbose) {
+      configuration.relations = ['customerId'];
+    }
+
+    const users = await this.userRepo.find(configuration);
+
+    if (users.length === 0) throw new NotFoundException(`Users Not Found`);
 
     return users;
   }

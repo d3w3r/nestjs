@@ -63,12 +63,14 @@ export class BrandsService {
 
     return brandModified;
   }
-  removeOne(id: number) {
-    const TO_REMOVE = 1;
-    const index = this.getIndex(id);
-    if (index === -1) throw new NotFoundException(`Brand ${id} not found`);
-
-    return this.brands.splice(index, TO_REMOVE);
-  }
   */
+  async removeOne(id: number) {
+    const brandR = await this.getOne(id);
+
+    if (!brandR) throw new NotFoundException(`Brand ${id} not found`);
+
+    await this.brandRepo.remove(brandR);
+
+    return brandR;
+  }
 }

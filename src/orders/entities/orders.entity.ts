@@ -6,9 +6,19 @@ import {
   ArrayNotEmpty,
   IsDate,
 } from 'class-validator';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 
 import { User } from './../../users/entities/users.entity';
+import { Product } from './../../products/entities/products.entity';
+import { Items } from './items.entity';
 
 @Entity()
 export class Order {
@@ -23,18 +33,11 @@ export class Order {
   @Column({ type: 'date', default: () => 'CURRENT_TIMESTAMP' })
   readonly date: Date;
 
-  @IsNotEmpty()
-  @IsNumber()
-  @IsPositive()
-  @Column({ type: 'int', nullable: true })
   @ManyToOne(() => User, (user) => user.order)
-  readonly userId: number;
+  user: User;
 
-  @IsArray()
-  @ArrayNotEmpty()
-  @IsNumber({}, { each: true })
-  @Column({ type: 'simple-array' })
-  readonly productsID: number[];
+  @OneToMany(() => Items, (item) => item.order)
+  item: Items[];
 
   @IsNotEmpty()
   @IsNumber()

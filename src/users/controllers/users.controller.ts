@@ -36,8 +36,12 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Get all the users' })
   @Get()
-  getAll() {
-    return this.usersService.getAll();
+  getAll(
+    @Query('verbose', new ParseBoolPipe({ optional: true })) verbose: boolean,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit: number,
+    @Query('offset', new ParseIntPipe({ optional: true })) offset: number,
+  ) {
+    return this.usersService.getAll(limit, offset, verbose);
   }
 
   @ApiOperation({ summary: 'Get the api key' })

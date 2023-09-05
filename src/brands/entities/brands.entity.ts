@@ -4,11 +4,18 @@ import {
   IsAlpha,
   IsString,
   Length,
+  IsEmpty,
   IsNotEmpty,
   IsEmail,
   IsMobilePhone,
 } from 'class-validator';
-import { PrimaryGeneratedColumn, Entity, Column, OneToMany } from 'typeorm';
+import {
+  PrimaryGeneratedColumn,
+  Entity,
+  Column,
+  OneToMany,
+  CreateDateColumn,
+} from 'typeorm';
 
 import { Product } from './../../products/entities/products.entity';
 
@@ -47,4 +54,12 @@ export class Brand {
 
   @OneToMany(() => Product, (product) => product.brand)
   readonly product: number;
+
+  @IsEmpty()
+  @CreateDateColumn({ type: 'timetz', default: () => 'CURRENT_TIMESTAMP' })
+  readonly createdAt: Date;
+
+  @IsEmpty()
+  @CreateDateColumn({ type: 'timetz', default: () => 'CURRENT_TIMESTAMP' })
+  readonly updatedAt: Date;
 }
