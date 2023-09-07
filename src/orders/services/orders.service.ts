@@ -5,7 +5,7 @@ import { FindManyOptions, Repository, FindOneOptions } from 'typeorm';
 import { Order } from './../entities/orders.entity';
 import { User } from './../../users/entities/users.entity';
 import { Product } from './../../products/entities/products.entity';
-import { Items } from '../entities/items.entity';
+import { Item } from '../entities/items.entity';
 import { ProductsService } from './../../products/services/products.service';
 import { UsersService } from './../../users/services/users.service';
 import {
@@ -22,8 +22,8 @@ export class OrdersService {
     private usersService: UsersService,
     private productsService: ProductsService,
     @InjectRepository(Order) private ordersRepo: Repository<Order>,
-    @InjectRepository(Items)
-    private itemsRepo: Repository<Items>,
+    @InjectRepository(Item)
+    private itemsRepo: Repository<Item>,
   ) {}
 
   async getAll(offset = 0, limit = 10, verbose = false) {
@@ -33,7 +33,7 @@ export class OrdersService {
     };
 
     if (verbose) {
-      configuration.relations = ['user', 'products'];
+      configuration.relations = ['user', 'item', 'item.product'];
     }
 
     const orders = await this.ordersRepo.find(configuration);
@@ -48,7 +48,7 @@ export class OrdersService {
     };
 
     if (verbose) {
-      configuration.relations = ['user'];
+      configuration.relations = ['user', 'item', 'item.product'];
     }
 
     const order = await this.ordersRepo.findOne(configuration);

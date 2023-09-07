@@ -1,9 +1,9 @@
 import { OmitType } from '@nestjs/swagger';
 import { IsNumber, IsPositive, IsNotEmpty } from 'class-validator';
 
-import { Items } from './../entities/items.entity';
+import { Item } from './../entities/items.entity';
 
-export class CreateItemDto extends OmitType(Items, [
+export class CreateItemDto extends OmitType(Item, [
   'id',
   'createdAt',
   'updatedAt',

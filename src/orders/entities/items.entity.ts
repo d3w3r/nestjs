@@ -18,7 +18,7 @@ import { Order } from './orders.entity';
 import { Product } from '../../products/entities/products.entity';
 
 @Entity()
-export class Items {
+export class Item {
   @IsEmpty()
   @PrimaryGeneratedColumn()
   @ApiProperty({ description: 'Identificador del registro' })
