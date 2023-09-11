@@ -32,8 +32,10 @@ export class ProductsController {
     @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
     @Query('offset', new ParseIntPipe({ optional: true })) offset = 0,
     @Query('verbose', new ParseBoolPipe({ optional: true })) verbose = false,
+    @Query('max', new ParseIntPipe({ optional: true })) max: number,
+    @Query('min', new ParseIntPipe({ optional: true })) min: number,
   ) {
-    return this.productsService.findAll(verbose, limit, offset);
+    return this.productsService.findAll(verbose, limit, offset, max, min);
   }
 
   @Get(':id')

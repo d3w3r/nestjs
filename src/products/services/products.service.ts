@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository, In, Between, FindOptionsWhere } from 'typeorm';
 import * as _ from 'lodash';
 
 import { Product } from './../entities/products.entity';
@@ -85,9 +85,14 @@ export class ProductsService {
     verbose: boolean,
     limit: number,
     offset: number,
+    max: number,
+    min: number,
   ): Promise<ReviewProductDto[] | Product[]> {
+    const where: FindOptionsWhere<Product> = {};
+
     if (verbose) {
       const products = await this.productRepo.find({
+        where: { price: Between(min, max) },
         skip: offset,
         take: limit,
         relations: ['brand', 'categories'],
@@ -99,6 +104,7 @@ export class ProductsService {
       return products;
     } else {
       const products = await this.productRepo.find({
+        where: { price: Between(min, max) },
         skip: offset,
         take: limit,
       });
