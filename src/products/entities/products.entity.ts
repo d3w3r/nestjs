@@ -10,6 +10,7 @@ import {
   IsEmpty,
   IsDate,
 } from 'class-validator';
+import { Exclude, Expose } from 'class-transformer';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -91,9 +92,16 @@ export class Product {
 
   @IsEmpty()
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @Exclude()
   readonly createdAt: Date;
 
   @IsEmpty()
   @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @Exclude()
   readonly updatedAt: Date;
+
+  @Expose()
+  get nuevo() {
+    return 'This is a new stuff';
+  }
 }
