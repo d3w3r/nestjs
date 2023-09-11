@@ -21,6 +21,7 @@ import {
   ManyToMany,
   JoinTable,
   OneToMany,
+  Index,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -29,6 +30,7 @@ import { Order } from './../../orders/entities/orders.entity';
 import { Category } from './../../categories/entities/categories.entity';
 
 @Entity()
+@Index(['price', 'stock'])
 export class Product {
   @IsNotEmpty()
   @IsNumber()
@@ -61,6 +63,7 @@ export class Product {
   @IsNumber()
   @IsPositive()
   @Column({ type: 'int' })
+  @Index()
   @ApiProperty()
   readonly price: number;
 
