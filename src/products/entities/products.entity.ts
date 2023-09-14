@@ -30,7 +30,7 @@ import { Brand } from './../../brands/entities/brands.entity';
 import { Order } from './../../orders/entities/orders.entity';
 import { Category } from './../../categories/entities/categories.entity';
 
-@Entity()
+@Entity({ name: 'products' })
 @Index(['price', 'stock'])
 export class Product {
   @IsNotEmpty()
@@ -80,6 +80,7 @@ export class Product {
   @IsPositive()
   @ApiProperty()
   @ManyToOne(() => Brand, (brand) => brand.product)
+  @JoinColumn({ name: 'brand_id' })
   brand: Brand;
 
   @IsNotEmpty()
@@ -87,16 +88,32 @@ export class Product {
   @IsNumber({}, { each: true })
   @ApiProperty()
   @ManyToMany(() => Category, (category) => category.products)
-  @JoinTable()
+  @JoinTable({
+    name: 'products_categories',
+    joinColumn: {
+      name: 'product_id',
+    },
+    inverseJoinColumn: {
+      name: 'category_id',
+    },
+  })
   categories: Category[];
 
   @IsEmpty()
-  @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   @Exclude()
   readonly createdAt: Date;
 
   @IsEmpty()
-  @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @UpdateDateColumn({
+    name: 'updated_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   @Exclude()
   readonly updatedAt: Date;
 

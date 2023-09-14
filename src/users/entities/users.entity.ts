@@ -21,7 +21,7 @@ import {
 import { Customer } from './../../customers/entities/customers.entity';
 import { Order } from './../../orders/entities/orders.entity';
 
-@Entity()
+@Entity({ name: 'users' })
 export class User {
   @ApiProperty({ description: 'Unique identificator for the register' })
   @IsNotEmpty()
@@ -57,7 +57,7 @@ export class User {
   @IsPositive()
   @Column({ type: 'int', nullable: true })
   @OneToOne(() => Customer, (customer) => customer.userId)
-  @JoinColumn({ name: 'customerId' })
+  @JoinColumn({ name: 'customer_id' })
   readonly customerId: number;
 
   @ManyToMany(() => Order, (order) => order.user)

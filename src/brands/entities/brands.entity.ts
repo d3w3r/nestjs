@@ -19,7 +19,7 @@ import {
 
 import { Product } from './../../products/entities/products.entity';
 
-@Entity()
+@Entity({ name: 'brands' })
 export class Brand {
   @IsNumber()
   @IsPositive()
@@ -56,10 +56,18 @@ export class Brand {
   readonly product: number;
 
   @IsEmpty()
-  @CreateDateColumn({ type: 'timetz', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({
+    name: 'created_at',
+    type: 'timetz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   readonly createdAt: Date;
 
   @IsEmpty()
-  @CreateDateColumn({ type: 'timetz', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({
+    name: 'updated_at',
+    type: 'timetz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   readonly updatedAt: Date;
 }

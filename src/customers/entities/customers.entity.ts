@@ -11,7 +11,7 @@ import {
 import { User } from 'src/users/entities/users.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'customers' })
 export class Customer {
   @IsNumber()
   @IsPositive()

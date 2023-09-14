@@ -14,13 +14,14 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  JoinColumn,
 } from 'typeorm';
 
 import { User } from './../../users/entities/users.entity';
 import { Product } from './../../products/entities/products.entity';
 import { Item } from './items.entity';
 
-@Entity()
+@Entity({ name: 'orders' })
 export class Order {
   @IsNotEmpty()
   @IsNumber()
@@ -34,6 +35,7 @@ export class Order {
   readonly date: Date;
 
   @ManyToOne(() => User, (user) => user.order)
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @OneToMany(() => Item, (item) => item.order)
