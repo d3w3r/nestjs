@@ -54,4 +54,9 @@ export class AppController {
     response.status(HttpStatus.OK).send(message);
     // return message;
   }
+
+  @Get('/tasksy')
+  getTasksy() {
+    return this.appService.getTasksy();
+  }
 }

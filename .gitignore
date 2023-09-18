@@ -36,3 +36,6 @@ lerna-debug.log*
 
 # My Own Ignores
 *.env
+mysql_data/
+mongo_data/
+postgres_data/

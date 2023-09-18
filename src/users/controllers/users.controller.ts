@@ -37,8 +37,8 @@ export class UsersController {
   getConfigVars() {
     // return `This is apikey value: ${this.configService.get('X_API_KEY')}`;
     const apikey = this.configService.apikey;
-    const dbname = this.configService.database.name;
-    const dbport = this.configService.database.port;
+    const dbname = this.configService.database.mongo.database;
+    const dbport = this.configService.database.mongo.port;
     return `key: ${apikey}, dbname: ${dbname}, dbport: ${dbport}`;
   }
 
