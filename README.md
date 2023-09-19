@@ -117,3 +117,4 @@
 
 # TODO LIST
 
+- continue watching the video 08

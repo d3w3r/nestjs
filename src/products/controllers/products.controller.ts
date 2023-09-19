@@ -44,29 +44,29 @@ export class ProductsController {
     return this.productsService.findOne(id, verbose);
   }
 
-  @Post()
-  create(@Body() payload: CreateProductDto) {
-    return this.productsService.create(payload);
-  }
+  // @Post()
+  // create(@Body() payload: CreateProductDto) {
+  //   return this.productsService.create(payload);
+  // }
 
-  @Put(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateProductDto,
-  ) {
-    return this.productsService.update(id, payload);
-  }
+  // @Put(':id')
+  // update(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Body() payload: UpdateProductDto,
+  // ) {
+  //   return this.productsService.update(id, payload);
+  // }
 
-  @Patch(':id')
-  modify(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() payload: ModifyProductDto,
-  ) {
-    return this.productsService.modify(id, payload);
-  }
+  // @Patch(':id')
+  // modify(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Body() payload: ModifyProductDto,
+  // ) {
+  //   return this.productsService.modify(id, payload);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.remove(id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id', ParseIntPipe) id: number) {
+  //   return this.productsService.remove(id);
+  // }
 }
