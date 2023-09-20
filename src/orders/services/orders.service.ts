@@ -24,7 +24,7 @@ export class OrdersService {
   private _getUser(id: number) {
     let user;
     try {
-      user = this.usersService.getOne(id);
+      user = this.usersService.getOne(String(id));
     } catch (err) {}
 
     return user;

@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 import { Order } from './../../orders/entities/orders.entity';
 import { User } from './../entities/users.entity';
@@ -14,74 +16,46 @@ import { ProductsService } from './../../products/services/products.service';
 
 @Injectable()
 export class UsersService {
-  private counter = 1;
-  private users: User[] = [];
+  constructor(
+    private customersService: CustomersService,
+    @InjectModel(User.name) private userModel: Model<User>,
+  ) {}
 
-  constructor(private customersService: CustomersService) {}
-
-  getOne(id: number) {
-    const user = this.users.find((e) => e.id === id);
+  async getOne(id: User['id']) {
+    const user = await this.userModel.findById(id).exec();
     if (!user) throw new NotFoundException(`User ${id} not found`);
 
-    const { customerID, ...copied } = user;
-
-    let customer = undefined;
-    try {
-      customer = this.customersService.getOne(customerID);
-    } catch (err) {}
-
-    const response: ReviewUserDto = { ...copied, customer };
-
-    return response;
+    return user;
   }
-  create(payload: CreateUserDto) {
-    const newUser: User = {
-      id: this.counter,
-      ...payload,
-    };
-    this.users.push(newUser);
-    this.counter++;
+  async getAll() {
+    const users = await this.userModel.find().exec();
+    if (users.length == 0) throw new NotFoundException(`Users not found`);
 
-    return newUser;
+    return users;
   }
-  update(id: number, payload: UpdateUserDto) {
-    const index = this.users.findIndex((e) => e.id === id);
-    const userOld = this.users.at(index);
-    if (!userOld) throw new NotFoundException(`User ${id} not found`);
-
-    this.users[index] = {
-      id: userOld.id,
-      ...payload,
-    };
-
-    return this.users.at(index);
+  async create(payload: CreateUserDto) {
+    const entity = new this.userModel(payload);
+    const user = await entity.save();
+    return user;
   }
-  modify(id: number, payload: PatchUserDto) {
-    const index = this.users.findIndex((e) => e.id === id);
-    const userOld = this.users.at(index);
-    if (!userOld) throw new NotFoundException(`User ${id} not found`);
+  update(id: User['id'], payload: UpdateUserDto) {
+    const user = this.userModel
+      .findByIdAndUpdate(id, { $set: payload }, { new: true })
+      .exec();
+    if (!user) throw new NotFoundException(`User ${id} not found`);
 
-    const userMod = {
-      ...userOld,
-      ...payload,
-    };
-    this.users[index] = userMod;
-
-    return this.users.at(index);
+    return user;
   }
-  remove(id: number) {
-    const index = this.users.findIndex((e) => e.id === id);
-    if (!index) throw new NotFoundException(`User ${id} not found`);
+  modify(id: User['id'], payload: PatchUserDto) {
+    const user = this.userModel
+      .findByIdAndUpdate(id, { $set: payload }, { new: true })
+      .exec();
+    if (!user) throw new NotFoundException(`User ${id} not found`);
 
-    return this.users.splice(index, 1);
+    return user;
   }
-
-  // getOrderByUser(id: number) {
-  //   const user = this.getOne(id);
-  //   return {
-  //     date: new Date(),
-  //     user,
-  //     products: this.productsService.findAll(),
-  //   };
-  // }
+  remove(id: User['id']) {
+    const user = this.userModel.findByIdAndDelete(id);
+    return user;
+  }
 }
