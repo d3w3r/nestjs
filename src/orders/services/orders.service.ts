@@ -29,7 +29,7 @@ export class OrdersService {
 
     return user;
   }
-  private _getProducts(ids: number[]) {
+  private _getProducts(ids: string[]) {
     const products: Product[] = [];
 
     for (const id of ids) {

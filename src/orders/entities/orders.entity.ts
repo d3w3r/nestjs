@@ -25,7 +25,7 @@ export class Order {
   @IsArray()
   @ArrayNotEmpty()
   @IsNumber({}, { each: true })
-  readonly productsID: number[];
+  readonly productsID: string[];
 
   @IsNotEmpty()
   @IsNumber()
