@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 import { Brand } from './../entities/brands.entity';
 import {
@@ -9,66 +11,46 @@ import {
 
 @Injectable()
 export class BrandsService {
-  private brands: Brand[] = [];
-  private counter = 1;
+  constructor(@InjectModel(Brand.name) private brandModel: Model<Brand>) {}
 
-  private getIndex(id: number) {
-    return this.brands.findIndex((b) => b.id === id);
+  async getAll(limit: number, offset: number) {
+    const brands = await this.brandModel.find().exec();
+    if (brands.length === 0) throw new NotFoundException(`Brands not found`);
+
+    return brands;
   }
-
-  getAll(limit: number, offset: number) {
-    const end = limit + offset;
-    const list = this.brands.slice(offset, end);
-    if (!list) throw new NotFoundException('Brands not found');
-
-    return list;
-  }
-  getOne(id: number) {
-    const brand = this.brands.find((b) => b.id === id);
+  async getOne(id: Brand['id']) {
+    const brand = await this.brandModel.findById(id).exec();
     if (!brand) throw new NotFoundException(`Brand ${id} not found`);
 
     return brand;
   }
-  createOne(payload: CreateBrandDto) {
-    const brandNew = {
-      id: this.counter,
-      ...payload,
-    };
-    this.brands.push(brandNew);
-    this.counter++;
+  async createOne(payload: CreateBrandDto) {
+    const toCreate = new this.brandModel(payload);
+    const brand = await toCreate.save();
 
-    return brandNew;
+    return brand;
   }
-  updateOne(id: number, payload: UpdateBrandDto) {
-    const index = this.getIndex(id);
-    if (index === -1) throw new NotFoundException(`Brand ${id} not found`);
-
-    const brandUpdate = {
-      id,
-      ...payload,
-    };
-    this.brands[index] = brandUpdate;
-
-    return brandUpdate;
-  }
-  modifyOne(id: number, payload: ModifyBrandDto) {
-    const index = this.getIndex(id);
-    const brand = this.brands[index];
+  async updateOne(id: Brand['id'], payload: UpdateBrandDto) {
+    const brand = await this.brandModel
+      .findByIdAndUpdate(id, { $set: payload }, { new: true })
+      .exec();
     if (!brand) throw new NotFoundException(`Brand ${id} not found`);
 
-    const brandModified = {
-      ...brand,
-      ...payload,
-    };
-    this.brands[index] = brandModified;
-
-    return brandModified;
+    return brand;
   }
-  removeOne(id: number) {
-    const TO_REMOVE = 1;
-    const index = this.getIndex(id);
-    if (index === -1) throw new NotFoundException(`Brand ${id} not found`);
+  async modifyOne(id: Brand['id'], payload: ModifyBrandDto) {
+    const brand = await this.brandModel
+      .findByIdAndUpdate(id, { $set: payload }, { new: true })
+      .exec();
+    if (!brand) throw new NotFoundException(`Brand ${id} not found`);
 
-    return this.brands.splice(index, TO_REMOVE);
+    return brand;
+  }
+  async removeOne(id: Brand['id']) {
+    const brand = await this.brandModel.findByIdAndDelete(id).exec();
+    if (!brand) throw new NotFoundException(`Brand ${id} not found`);
+
+    return brand;
   }
 }
