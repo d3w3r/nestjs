@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 import { Customer } from './../entities/customers.entity';
 import {
@@ -9,65 +11,49 @@ import {
 
 @Injectable()
 export class CustomersService {
-  private customers: Customer[] = [];
-  private counter = 1;
+  constructor(
+    @InjectModel(Customer.name) private customerModel: Model<Customer>,
+  ) {}
 
-  private getIndex(id: number) {
-    return this.customers.findIndex((e) => e.id === id);
+  async getAll() {
+    const customers = await this.customerModel.find().exec();
+    if (customers.length === 0)
+      throw new NotFoundException('Customers not found');
+
+    return customers;
   }
-
-  getAll() {
-    const list = this.customers;
-    if (list.length === 0) throw new NotFoundException(`Customers not found`);
-
-    return list;
-  }
-  getOne(id: number) {
-    const customer = this.customers.find((e) => e.id === id);
+  async getOne(id: Customer['id']) {
+    const customer = await this.customerModel.findById(id).exec();
     if (!customer) throw new NotFoundException(`Customer ${id} not found`);
 
     return customer;
   }
-  createOne(payload: CreateCustomerDto) {
-    const newCustomer: Customer = {
-      id: this.counter,
-      ...payload,
-    };
-    this.customers.push(newCustomer);
-    this.counter++;
+  async createOne(payload: CreateCustomerDto) {
+    const toCreate = new this.customerModel(payload);
+    const customer = await toCreate.save();
 
-    return newCustomer;
+    return customer;
   }
-  modifyOne(id: number, payload: ModifyCustomerDto) {
-    const index = this.getIndex(id);
-    const customer = this.customers[index];
+  async modifyOne(id: Customer['id'], payload: ModifyCustomerDto) {
+    const customer = await this.customerModel
+      .findByIdAndUpdate(id, { $set: payload }, { new: true })
+      .exec();
     if (!customer) throw new NotFoundException(`Customer ${id} not found`);
 
-    const customerModified: Customer = {
-      ...customer,
-      ...payload,
-    };
-    this.customers[index] = customerModified;
-
-    return customerModified;
+    return customer;
   }
-  updateOne(id: number, payload: UpdateCustomerDto) {
-    const index = this.getIndex(id);
-    const customer = this.customers[index];
+  async updateOne(id: Customer['id'], payload: UpdateCustomerDto) {
+    const customer = await this.customerModel
+      .findByIdAndUpdate(id, { $set: payload }, { new: true })
+      .exec();
     if (!customer) throw new NotFoundException(`Customer ${id} not found`);
 
-    const customerUpdated: Customer = {
-      id: customer.id,
-      ...payload,
-    };
-    this.customers[index];
-
-    return customerUpdated;
+    return customer;
   }
-  removeOne(id: number) {
-    const index = this.getIndex(id);
-    if (!index) throw new NotFoundException(`Customer ${id} not found`);
+  async removeOne(id: Customer['id']) {
+    const customer = await this.customerModel.findByIdAndDelete(id);
+    if (!customer) throw new NotFoundException(`Customer ${id} not found`);
 
-    return this.customers.splice(index, 1);
+    return customer;
   }
 }
