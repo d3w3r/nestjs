@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
+import { Category } from './../entities/categories.entity';
 import { CategoriesService } from './../services/categories.service';
 import {
   CreateCategoryDto,
@@ -26,13 +27,13 @@ export class CategoriesController {
 
   @Get()
   getCategories(
-    @Query('limit', ParseIntPipe) limit = 10,
-    @Query('offset', ParseIntPipe) offset = 0,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
+    @Query('offset', new ParseIntPipe({ optional: true })) offset = 0,
   ) {
     return this.categoriesService.getAll(limit, offset);
   }
   @Get(':id')
-  getCategory(@Param('id', ParseIntPipe) id: number) {
+  getCategory(@Param('id') id: Category['id']) {
     return this.categoriesService.getOne(id);
   }
   @Get(':cid/products')
@@ -50,21 +51,15 @@ export class CategoriesController {
     return this.categoriesService.createOne(payload);
   }
   @Put(':id')
-  change(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateCategoryDto,
-  ) {
+  change(@Param('id') id: Category['id'], @Body() payload: UpdateCategoryDto) {
     return this.categoriesService.updateOne(id, payload);
   }
   @Patch(':id')
-  modify(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() payload: ModifyCategoryDto,
-  ) {
+  modify(@Param('id') id: Category['id'], @Body() payload: ModifyCategoryDto) {
     return this.categoriesService.modifyOne(id, payload);
   }
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param('id') id: Category['id']) {
     return this.categoriesService.removeOne(id);
   }
 }

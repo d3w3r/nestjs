@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 import { Category } from './../entities/categories.entity';
 import {
@@ -9,70 +11,49 @@ import {
 
 @Injectable()
 export class CategoriesService {
-  private categories: Category[] = [];
-  private counter = 1;
+  constructor(
+    @InjectModel(Category.name) private categoryModel: Model<Category>,
+  ) {}
 
-  private _getIndex(id: number) {
-    return this.categories.findIndex((c) => c.id === id);
-  }
-  private _updateCounter() {
-    this.counter++;
-  }
+  async getAll(limit: number, offset: number) {
+    const categories = await this.categoryModel.find().exec();
+    if (categories.length === 0)
+      throw new NotFoundException(`Categories not found`);
 
-  getAll(limit: number, offset: number) {
-    const end = offset + limit;
-    const list = this.categories.slice(offset, end);
-    if (list.length === 0) throw new NotFoundException(`Categories not found`);
-
-    return list;
+    return categories;
   }
-  getOne(id: number) {
-    const category = this.categories.find((c) => c.id === id);
+  async getOne(id: Category['id']) {
+    const category = await this.categoryModel.findById(id).exec();
     if (!category) throw new NotFoundException(`Category ${id} not found`);
 
     return category;
   }
-  createOne(payload: CreateCategoryDto) {
-    const categoryNew: Category = {
-      id: this.counter,
-      ...payload,
-    };
-    this.categories.push(categoryNew);
-    this._updateCounter();
+  async createOne(payload: CreateCategoryDto) {
+    const toCreate = new this.categoryModel(payload);
+    const category = await toCreate.save();
 
-    return categoryNew;
+    return category;
   }
-  updateOne(id: number, payload: UpdateCategoryDto) {
-    const index = this._getIndex(id);
-    const categoryOld = this.getOne(id);
-    if (!categoryOld) throw new NotFoundException(`Category ${id} not found`);
+  async updateOne(id: Category['id'], payload: UpdateCategoryDto) {
+    const category = await this.categoryModel
+      .findByIdAndUpdate(id, { $set: payload }, { new: true })
+      .exec();
+    if (!category) throw new NotFoundException(`Category ${id} not found`);
 
-    const categoryUpdated: Category = {
-      id: categoryOld.id,
-      ...payload,
-    };
-    this.categories[index] = categoryUpdated;
-
-    return categoryUpdated;
+    return category;
   }
-  modifyOne(id: number, payload: ModifyCategoryDto) {
-    const index = this._getIndex(id);
-    const categoryOld = this.getOne(id);
-    if (!categoryOld) throw new NotFoundException(`Category ${id} not found`);
+  async modifyOne(id: Category['id'], payload: ModifyCategoryDto) {
+    const category = await this.categoryModel
+      .findByIdAndUpdate(id, { $set: payload }, { new: true })
+      .exec();
+    if (!category) throw new NotFoundException(`Category ${id} not found`);
 
-    const categoryModified = {
-      ...categoryOld,
-      ...payload,
-    };
-    this.categories[index] = categoryModified;
-
-    return categoryModified;
+    return category;
   }
-  removeOne(id: number) {
-    const amount = 1;
-    const index = this._getIndex(id);
-    if (index === -1) throw new NotFoundException(`Category ${id} not found`);
+  async removeOne(id: Category['id']) {
+    const category = await this.categoryModel.findByIdAndDelete(id).exec();
+    if (!category) throw new NotFoundException(`Category ${id} not found`);
 
-    return this.categories.splice(index, amount);
+    return category;
   }
 }
