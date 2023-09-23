@@ -17,6 +17,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 
+import { MongoIdPipe } from './../../common/mongo-id/mongo-id.pipe';
 import { Customer } from './../entities/customers.entity';
 import { CustomersService } from './../services/customers.service';
 import {
@@ -38,7 +39,7 @@ export class CustomersController {
     return this.customersService.getAll();
   }
   @Get(':id')
-  getOne(@Param('id') id: Customer['id']) {
+  getOne(@Param('id', MongoIdPipe) id: Customer['id']) {
     return this.customersService.getOne(id);
   }
   @Get(':id/orders')
@@ -60,17 +61,23 @@ export class CustomersController {
   }
   @Put(':id')
   @HttpCode(HttpStatus.ACCEPTED)
-  change(@Param('id') id: Customer['id'], @Body() payload: UpdateCustomerDto) {
+  change(
+    @Param('id', MongoIdPipe) id: Customer['id'],
+    @Body() payload: UpdateCustomerDto,
+  ) {
     return this.customersService.updateOne(id, payload);
   }
   @Patch(':id')
   @HttpCode(HttpStatus.ACCEPTED)
-  modify(@Param('id') id: Customer['id'], @Body() payload: ModifyCustomerDto) {
+  modify(
+    @Param('id', MongoIdPipe) id: Customer['id'],
+    @Body() payload: ModifyCustomerDto,
+  ) {
     return this.customersService.modifyOne(id, payload);
   }
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  remove(@Param('id') id: Customer['id']) {
+  remove(@Param('id', MongoIdPipe) id: Customer['id']) {
     return this.customersService.removeOne(id);
   }
 }

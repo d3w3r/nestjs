@@ -12,6 +12,7 @@ import {
 import { ConfigType } from '@nestjs/config';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
+import { MongoIdPipe } from './../../common/mongo-id/mongo-id.pipe';
 import config from './../../config';
 import { UsersService } from './../services/users.service';
 import {
@@ -40,7 +41,7 @@ export class UsersController {
   }
   @ApiOperation({ summary: 'Get one user by id' })
   @Get(':id')
-  getOne(@Param('id') id: User['id']) {
+  getOne(@Param('id', MongoIdPipe) id: User['id']) {
     return this.usersService.getOne(id);
   }
 
@@ -58,19 +59,25 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Change a whole register' })
   @Put(':id')
-  change(@Param('id') id: User['id'], @Body() payload: UpdateUserDto) {
+  change(
+    @Param('id', MongoIdPipe) id: User['id'],
+    @Body() payload: UpdateUserDto,
+  ) {
     return this.usersService.update(id, payload);
   }
 
   @ApiOperation({ summary: 'Modify a user in the system' })
   @Patch(':id')
-  modify(@Param('id') id: User['id'], @Body() payload: PatchUserDto) {
+  modify(
+    @Param('id', MongoIdPipe) id: User['id'],
+    @Body() payload: PatchUserDto,
+  ) {
     return this.usersService.modify(id, payload);
   }
 
   @ApiOperation({ summary: 'Remove a user with id from the system' })
   @Delete(':id')
-  remove(@Param('id') id: User['id']) {
+  remove(@Param('id', MongoIdPipe) id: User['id']) {
     return this.usersService.remove(id);
   }
 }

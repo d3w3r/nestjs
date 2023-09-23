@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
+import { MongoIdPipe } from './../../common/mongo-id/mongo-id.pipe';
 import { Brand } from './../entities/brands.entity';
 import { BrandsService } from '../services/brands.service';
 import {
@@ -34,7 +35,7 @@ export class BrandsController {
   }
 
   @Get(':id')
-  getOne(@Param('id') id: Brand['id']) {
+  getOne(@Param('id', MongoIdPipe) id: Brand['id']) {
     return this.brandsService.getOne(id);
   }
 
@@ -44,17 +45,23 @@ export class BrandsController {
   }
 
   @Put(':id')
-  change(@Param('id') id: Brand['id'], @Body() payload: UpdateBrandDto) {
+  change(
+    @Param('id', MongoIdPipe) id: Brand['id'],
+    @Body() payload: UpdateBrandDto,
+  ) {
     return this.brandsService.updateOne(id, payload);
   }
 
   @Patch(':id')
-  modify(@Param('id') id: Brand['id'], @Body() payload: ModifyBrandDto) {
+  modify(
+    @Param('id', MongoIdPipe) id: Brand['id'],
+    @Body() payload: ModifyBrandDto,
+  ) {
     return this.brandsService.modifyOne(id, payload);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: Brand['id']) {
+  remove(@Param('id', MongoIdPipe) id: Brand['id']) {
     return this.brandsService.removeOne(id);
   }
 }

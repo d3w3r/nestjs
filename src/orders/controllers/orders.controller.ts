@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
+import { MongoIdPipe } from './../../common/mongo-id/mongo-id.pipe';
 import { OrdersService } from '../services/orders.service';
 import {
   CreateOrderDto,
@@ -35,7 +36,7 @@ export class OrdersController {
   }
 
   @Get(':id')
-  getOne(@Param('id', ParseIntPipe) id: number) {
+  getOne(@Param('id', MongoIdPipe) id: number) {
     return this.ordersService.getOne(id);
   }
 
@@ -55,7 +56,7 @@ export class OrdersController {
 
   @Put(':id')
   change(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', MongoIdPipe) id: number,
     @Body() payload: UpdateOrderDto,
   ) {
     return this.ordersService.updateOne(id, payload);
@@ -63,14 +64,14 @@ export class OrdersController {
 
   @Patch(':id')
   modify(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', MongoIdPipe) id: number,
     @Body() payload: ModifyOrderDto,
   ) {
     return this.ordersService.modifyOne(id, payload);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
+  remove(@Param('id', MongoIdPipe) id: number) {
     return this.ordersService.removeOne(id);
   }
 }
