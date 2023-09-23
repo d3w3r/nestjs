@@ -1,4 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 import { Order } from './../entities/orders.entity';
 import { Product } from './../../products/entities/products.entity';
@@ -13,121 +15,53 @@ import {
 
 @Injectable()
 export class OrdersService {
-  private orders: Order[] = [];
-  private counter = 1;
-
   constructor(
     private usersService: UsersService,
     private productsService: ProductsService,
+    @InjectModel(Order.name) private orderModel: Model<Order>,
   ) {}
 
-  private _getUser(id: number) {
-    let user;
-    try {
-      user = this.usersService.getOne(String(id));
-    } catch (err) {}
+  async getAll() {
+    const orders = await this.orderModel.find().exec();
+    if (orders.length === 0) throw new NotFoundException(`Orders not found`);
 
-    return user;
+    return orders;
   }
-  private _getProducts(ids: string[]) {
-    const products: Product[] = [];
-
-    for (const id of ids) {
-      let product;
-      try {
-        product = this.productsService.findOne(id, true);
-      } catch (err) {
-        continue;
-      }
-
-      products.push(product);
-    }
-
-    return products;
-  }
-  private _getOne(id: number) {
-    const order = this.orders.find((e) => e.id === id);
+  async getOne(id: Order['id']) {
+    const order = await this.orderModel.findById(id).exec();
     if (!order) throw new NotFoundException(`Order ${id} not found`);
 
     return order;
   }
-
-  getAll(): ReviewOrderDto[] {
-    const list = this.orders;
-    if (list.length === 0) throw new NotFoundException('Orders not found');
-
-    const data = list.map((e) => {
-      const { userID, productsID, ...copied } = e;
-
-      const user = this._getUser(userID);
-      const products = this._getProducts(productsID);
-
-      return { ...copied, user, products };
-    });
-
-    return data;
-  }
-  getOne(id: number): ReviewOrderDto {
-    const order = this.orders.find((e) => e.id === id);
-    if (!order) throw new NotFoundException(`Order ${id} not found`);
-
-    const { userID, productsID, ...copied } = order;
-    const user = this._getUser(userID);
-    const products = this._getProducts(productsID);
-
-    const result = { ...copied, user, products };
-
-    return result;
-  }
   getAllProducts(id: number) {
-    const order = this.getOne(id);
-    if (order) throw new NotFoundException(`Order ${id} not found`);
-
-    return order.products;
+    return;
   }
-  createOne(payload: CreateOrderDto) {
-    const newOrder: Order = {
-      id: this.counter,
-      date: new Date(),
-      ...payload,
-    };
+  async createOne(payload: CreateOrderDto) {
+    const toCreate = new this.orderModel(payload);
+    const order = await toCreate.save();
 
-    this.orders.push(newOrder);
-    this.counter++;
-
-    return newOrder;
+    return order;
   }
-  updateOne(id: number, payload: UpdateOrderDto) {
-    const index = this.orders.findIndex((e) => e.id === id);
-    const order = this._getOne(id);
+  async updateOne(id: Order['id'], payload: UpdateOrderDto) {
+    const order = await this.orderModel
+      .findByIdAndUpdate(id, { $set: payload }, { new: true })
+      .exec();
     if (!order) throw new NotFoundException(`Order ${id} not found`);
 
-    const orderUpdate: Order = {
-      id: order.id,
-      date: new Date(),
-      ...payload,
-    };
-
-    this.orders[index] = orderUpdate;
-    return orderUpdate;
+    return order;
   }
-  modifyOne(id: number, payload: ModifyOrderDto) {
-    const index = this.orders.findIndex((e) => e.id === id);
-    const order = this._getOne(id);
+  async modifyOne(id: Order['id'], payload: ModifyOrderDto) {
+    const order = await this.orderModel
+      .findByIdAndUpdate(id, { $set: payload }, { new: true })
+      .exec();
     if (!order) throw new NotFoundException(`Order ${id} not found`);
 
-    const orderModify: Order = {
-      ...order,
-      ...payload,
-    };
-
-    this.orders[index] = orderModify;
-    return orderModify;
+    return order;
   }
-  removeOne(id: number) {
-    const index = this.orders.findIndex((e) => e.id === id);
-    if (index === -1) throw new NotFoundException(`Order ${id} not found`);
+  async removeOne(id: Order['id']) {
+    const order = await this.orderModel.findByIdAndDelete(id).exec();
+    if (!order) throw new NotFoundException(`Order ${id} not found`);
 
-    return this.orders.splice(index, 1);
+    return order;
   }
 }
