@@ -12,6 +12,7 @@ import {
   UpdateProductDto,
   ModifyProductDto,
   ReviewProductDto,
+  FilterProductDto,
 } from './../dtos/products.dto';
 
 @Injectable()
@@ -22,8 +23,13 @@ export class ProductsService {
     @InjectModel(Product.name) private productModel: Model<Product>,
   ) {}
 
-  findAll(verbose: boolean) {
-    return this.productModel.find().exec();
+  findAll(filter: FilterProductDto) {
+    const { limit, offset } = filter;
+    return this.productModel
+      .find()
+      .skip(offset as number)
+      .limit(limit as number)
+      .exec();
   }
   findOne(id: string, verbose: boolean) {
     return this.productModel.findById(id).exec();
