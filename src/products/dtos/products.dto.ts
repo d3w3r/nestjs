@@ -1,6 +1,11 @@
-// import { PartialType, OmitType } from '@nestjs/mapped-types';
 import { PartialType, OmitType } from '@nestjs/swagger';
-import { IsOptional, IsDecimal } from 'class-validator';
+import {
+  IsOptional,
+  IsNumber,
+  IsPositive,
+  Min,
+  ValidateIf,
+} from 'class-validator';
 
 import { Product } from './../entities/products.entity';
 import { Brand } from './../../brands/entities/brands.entity';
@@ -22,4 +27,15 @@ export class FilterProductDto {
 
   @IsOptional()
   readonly offset: string | number = 0;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  readonly minPrice?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  @ValidateIf((params) => params.minPrice)
+  readonly maxPrice?: number;
 }

@@ -41,12 +41,12 @@ export class Product extends Document {
   @IsUrl()
   readonly image: string;
 
-  @Prop({ type: Number })
+  @Prop({ type: Number, index: true }) // Indexacion simple
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
   @IsPositive()
-  readonly price: number;
+  price: number;
 
   @Prop({ type: Number })
   @ApiProperty()
@@ -69,3 +69,5 @@ export class Product extends Document {
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
+
+ProductSchema.index({ price: 1, stock: -1 }); // Indexacion compuesta

@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { Model, FilterQuery } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { Product } from './../entities/products.entity';
@@ -24,11 +24,18 @@ export class ProductsService {
   ) {}
 
   findAll(filter: FilterProductDto) {
-    const { limit, offset } = filter;
+    const filters: FilterQuery<Product> = {};
+    const { limit, offset, minPrice, maxPrice } = filter;
+
+    if (minPrice && maxPrice) {
+      filters.price = { $gte: minPrice, $lte: maxPrice };
+    }
+
     return this.productModel
-      .find()
+      .find(filters)
       .skip(offset as number)
       .limit(limit as number)
+      .sort({ price: 'asc' })
       .exec();
   }
   findOne(id: string, verbose: boolean) {
