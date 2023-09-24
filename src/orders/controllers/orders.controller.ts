@@ -19,6 +19,7 @@ import {
   CreateOrderDto,
   UpdateOrderDto,
   ModifyOrderDto,
+  FilterOrderDto,
 } from './../dtos/orders.dto';
 
 @ApiTags('Orders')
@@ -27,13 +28,8 @@ export class OrdersController {
   constructor(private ordersService: OrdersService) {}
 
   @Get()
-  getAll(
-    @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
-    @Query('offset', new ParseIntPipe({ optional: true })) offset = 0,
-    @Query('dateIni', new ParseIntPipe({ optional: true })) dateIni: number,
-    @Query('dateEnd', new ParseIntPipe({ optional: true })) dateEnd: number,
-  ) {
-    return this.ordersService.getAll();
+  getAll(@Query() params: FilterOrderDto) {
+    return this.ordersService.getAll(params);
   }
 
   @Get(':id')

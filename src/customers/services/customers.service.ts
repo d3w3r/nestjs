@@ -7,6 +7,7 @@ import {
   CreateCustomerDto,
   UpdateCustomerDto,
   ModifyCustomerDto,
+  FilterCustomerDto,
 } from './../dtos/customers.dto';
 
 @Injectable()
@@ -15,8 +16,14 @@ export class CustomersService {
     @InjectModel(Customer.name) private customerModel: Model<Customer>,
   ) {}
 
-  async getAll() {
-    const customers = await this.customerModel.find().exec();
+  async getAll(params: FilterCustomerDto) {
+    const { limit, offset } = params;
+
+    const customers = await this.customerModel
+      .find()
+      .skip(offset)
+      .limit(limit)
+      .exec();
     if (customers.length === 0)
       throw new NotFoundException('Customers not found');
 

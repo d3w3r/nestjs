@@ -7,14 +7,21 @@ import {
   CreateBrandDto,
   UpdateBrandDto,
   ModifyBrandDto,
+  FilterBrandDto,
 } from './../dtos/brands.dto';
 
 @Injectable()
 export class BrandsService {
   constructor(@InjectModel(Brand.name) private brandModel: Model<Brand>) {}
 
-  async getAll(limit: number, offset: number) {
-    const brands = await this.brandModel.find().exec();
+  async getAll(params: FilterBrandDto) {
+    const { limit, offset } = params;
+
+    const brands = await this.brandModel
+      .find()
+      .skip(offset)
+      .limit(limit)
+      .exec();
     if (brands.length === 0) throw new NotFoundException(`Brands not found`);
 
     return brands;

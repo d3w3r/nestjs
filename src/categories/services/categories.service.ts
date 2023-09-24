@@ -7,6 +7,7 @@ import {
   CreateCategoryDto,
   UpdateCategoryDto,
   ModifyCategoryDto,
+  FilterCategoryDto,
 } from './../dtos/categories.dto';
 
 @Injectable()
@@ -15,8 +16,14 @@ export class CategoriesService {
     @InjectModel(Category.name) private categoryModel: Model<Category>,
   ) {}
 
-  async getAll(limit: number, offset: number) {
-    const categories = await this.categoryModel.find().exec();
+  async getAll(params: FilterCategoryDto) {
+    const { limit, offset } = params;
+
+    const categories = await this.categoryModel
+      .find()
+      .skip(offset)
+      .limit(limit)
+      .exec();
     if (categories.length === 0)
       throw new NotFoundException(`Categories not found`);
 

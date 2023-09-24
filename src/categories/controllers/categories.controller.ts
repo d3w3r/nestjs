@@ -19,6 +19,7 @@ import {
   CreateCategoryDto,
   UpdateCategoryDto,
   ModifyCategoryDto,
+  FilterCategoryDto,
 } from './../dtos/categories.dto';
 
 @ApiTags('Categories')
@@ -27,11 +28,8 @@ export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
 
   @Get()
-  getCategories(
-    @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
-    @Query('offset', new ParseIntPipe({ optional: true })) offset = 0,
-  ) {
-    return this.categoriesService.getAll(limit, offset);
+  getCategories(@Query() params: FilterCategoryDto) {
+    return this.categoriesService.getAll(params);
   }
   @Get(':id')
   getCategory(@Param('id', MongoIdPipe) id: Category['id']) {

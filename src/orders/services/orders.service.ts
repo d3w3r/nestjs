@@ -11,6 +11,7 @@ import {
   UpdateOrderDto,
   ModifyOrderDto,
   ReviewOrderDto,
+  FilterOrderDto,
 } from './../dtos/orders.dto';
 
 @Injectable()
@@ -21,8 +22,14 @@ export class OrdersService {
     @InjectModel(Order.name) private orderModel: Model<Order>,
   ) {}
 
-  async getAll() {
-    const orders = await this.orderModel.find().exec();
+  async getAll(params: FilterOrderDto) {
+    const { limit, offset } = params;
+
+    const orders = await this.orderModel
+      .find()
+      .skip(offset)
+      .limit(limit)
+      .exec();
     if (orders.length === 0) throw new NotFoundException(`Orders not found`);
 
     return orders;

@@ -19,6 +19,7 @@ import {
   CreateBrandDto,
   UpdateBrandDto,
   ModifyBrandDto,
+  FilterBrandDto,
 } from './../dtos/brands.dto';
 
 @ApiTags('Brands')
@@ -27,11 +28,8 @@ export class BrandsController {
   constructor(private brandsService: BrandsService) {}
 
   @Get()
-  getAll(
-    @Query('limit', ParseIntPipe) limit = 10,
-    @Query('offset', ParseIntPipe) offset = 0,
-  ) {
-    return this.brandsService.getAll(limit, offset);
+  getAll(@Query() params: FilterBrandDto) {
+    return this.brandsService.getAll(params);
   }
 
   @Get(':id')

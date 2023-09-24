@@ -24,6 +24,7 @@ import {
   CreateCustomerDto,
   UpdateCustomerDto,
   ModifyCustomerDto,
+  FilterCustomerDto,
 } from './../dtos/customers.dto';
 
 @ApiTags('Customers')
@@ -32,11 +33,8 @@ export class CustomersController {
   constructor(private customersService: CustomersService) {}
 
   @Get()
-  getAll(
-    @Query('limit', new ParseIntPipe({ optional: true })) limit = 10,
-    @Query('offset', new ParseIntPipe({ optional: true })) offset = 0,
-  ) {
-    return this.customersService.getAll();
+  getAll(@Query() params: FilterCustomerDto) {
+    return this.customersService.getAll(params);
   }
   @Get(':id')
   getOne(@Param('id', MongoIdPipe) id: Customer['id']) {
