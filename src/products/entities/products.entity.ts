@@ -8,7 +8,7 @@ import {
   ArrayNotEmpty,
   IsArray,
 } from 'class-validator';
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -66,6 +66,14 @@ export class Product extends Document {
   @ArrayNotEmpty()
   @IsNumber({}, { each: true })
   readonly categoriesID: number[];
+
+  @Prop(
+    raw({
+      title: { type: String },
+      description: { type: String },
+    }),
+  )
+  readonly category: Record<string, any>;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
