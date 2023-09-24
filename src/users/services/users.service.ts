@@ -11,6 +11,7 @@ import {
   UpdateUserDto,
   PatchUserDto,
   ReviewUserDto,
+  FilterUserDto,
 } from './../dtos/users.dto';
 import { ProductsService } from './../../products/services/products.service';
 
@@ -27,8 +28,10 @@ export class UsersService {
 
     return user;
   }
-  async getAll() {
-    const users = await this.userModel.find().exec();
+  async getAll(params: FilterUserDto) {
+    const { limit, offset } = params;
+
+    const users = await this.userModel.find().skip(offset).limit(limit).exec();
     if (users.length == 0) throw new NotFoundException(`Users not found`);
 
     return users;

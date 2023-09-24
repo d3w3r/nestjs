@@ -8,6 +8,7 @@ import {
   Post,
   Body,
   Inject,
+  Query,
 } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
@@ -19,6 +20,7 @@ import {
   CreateUserDto,
   UpdateUserDto,
   PatchUserDto,
+  FilterUserDto,
 } from './../dtos/users.dto';
 import { User } from './../entities/users.entity';
 
@@ -47,8 +49,8 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Get all the users on the database' })
   @Get()
-  getAll() {
-    return this.usersService.getAll();
+  getAll(@Query() params: FilterUserDto) {
+    return this.usersService.getAll(params);
   }
 
   @ApiOperation({ summary: 'Create one user' })
