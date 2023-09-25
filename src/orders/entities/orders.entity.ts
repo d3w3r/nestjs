@@ -7,7 +7,9 @@ import {
   IsDate,
 } from 'class-validator';
 import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
+
+import { Product } from './../../products/entities/products.entity';
 
 @Schema()
 export class Order extends Document {
@@ -39,6 +41,9 @@ export class Order extends Document {
   @IsNumber()
   @IsPositive()
   readonly total: number;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: Product.name }] })
+  products: Types.Array<Product>;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

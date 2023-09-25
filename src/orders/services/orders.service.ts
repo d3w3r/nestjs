@@ -29,13 +29,17 @@ export class OrdersService {
       .find()
       .skip(offset)
       .limit(limit)
+      .populate('products')
       .exec();
     if (orders.length === 0) throw new NotFoundException(`Orders not found`);
 
     return orders;
   }
   async getOne(id: Order['id']) {
-    const order = await this.orderModel.findById(id).exec();
+    const order = await this.orderModel
+      .findById(id)
+      .populate('products')
+      .exec();
     if (!order) throw new NotFoundException(`Order ${id} not found`);
 
     return order;
