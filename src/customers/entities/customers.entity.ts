@@ -1,5 +1,5 @@
 import { Schema, SchemaFactory, Prop } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import {
   IsNotEmpty,
   IsNumber,
@@ -36,6 +36,11 @@ export class Customer extends Document {
   @IsEmail()
   @IsOptional()
   readonly email?: string;
+
+  @Prop({
+    type: [{ name: { type: String }, color: { type: String } }],
+  })
+  skills: Types.Array<Record<string, any>>;
 }
 
 export const CustomerSchema = SchemaFactory.createForClass(Customer);
