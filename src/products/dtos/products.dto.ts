@@ -1,4 +1,3 @@
-import { PartialType, OmitType, ApiProperty } from '@nestjs/swagger';
 import {
   IsOptional,
   IsNumber,
@@ -7,7 +6,10 @@ import {
   ValidateIf,
   ValidateNested,
   IsNotEmpty,
+  IsMongoId,
 } from 'class-validator';
+import { PartialType, OmitType, ApiProperty } from '@nestjs/swagger';
+import { Types } from 'mongoose';
 
 import { Product } from './../entities/products.entity';
 import { Brand } from './../../brands/entities/brands.entity';
@@ -19,6 +21,10 @@ export class CreateProductDto extends OmitType(Product, ['id']) {
   @ValidateNested()
   @ApiProperty()
   category: CreateCategoryDto;
+
+  @IsNotEmpty()
+  @IsMongoId()
+  brand: Types.ObjectId;
 }
 export class UpdateProductDto extends CreateProductDto {}
 export class ModifyProductDto extends PartialType(CreateProductDto) {}

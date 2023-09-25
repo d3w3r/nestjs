@@ -19,7 +19,7 @@ export class Brand extends Document {
   @IsNotEmpty()
   readonly id: string;
 
-  @Prop({ type: String })
+  @Prop({ type: String, required: true, unique: true })
   @IsString()
   @IsAlpha()
   @Length(2, 250)

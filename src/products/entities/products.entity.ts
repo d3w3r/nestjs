@@ -9,8 +9,9 @@ import {
   IsArray,
 } from 'class-validator';
 import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
+import { Brand } from 'src/brands/entities/brands.entity';
 
 @Schema()
 export class Product extends Document {
@@ -74,6 +75,9 @@ export class Product extends Document {
     }),
   )
   readonly category: Record<string, any>;
+
+  @Prop({ type: Types.ObjectId, ref: Brand.name })
+  readonly brand: Brand | Types.ObjectId;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

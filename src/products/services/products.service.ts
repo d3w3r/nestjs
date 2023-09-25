@@ -36,10 +36,11 @@ export class ProductsService {
       .skip(offset as number)
       .limit(limit as number)
       .sort({ price: 'asc' })
+      .populate('brand')
       .exec();
   }
   findOne(id: string, verbose: boolean) {
-    return this.productModel.findById(id).exec();
+    return this.productModel.findById(id).populate('brand').exec();
   }
   create(payload: CreateProductDto) {
     const newProduct = new this.productModel(payload);
