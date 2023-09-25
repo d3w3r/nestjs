@@ -75,4 +75,15 @@ export class OrdersService {
 
     return order;
   }
+  async removeOneProduct(id: string, productId: string) {
+    const order = await this.orderModel.findById(id);
+    order.products.pull(productId);
+    return order.save();
+  }
+  async addManyProducts(id: string, productsIds: string[]) {
+    const order = await this.orderModel.findById(id);
+    productsIds.forEach((e) => order.products.push(e));
+
+    return order.save();
+  }
 }
