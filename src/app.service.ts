@@ -13,14 +13,15 @@ export class AppService {
   ) {}
 
   getHello() {
-    return new Promise((resolve, reject) => {
-      const querystr = 'SELECT * FROM tasks';
+    return 'Hello World';
+    // return new Promise((resolve, reject) => {
+    //   const querystr = 'SELECT * FROM tasks';
 
-      this.clientPg.query(querystr, (err, res) => {
-        if (err) reject(err);
-        else resolve(res.rows);
-      });
-    });
+    //   this.clientPg.query(querystr, (err, res) => {
+    //     if (err) reject(err);
+    //     else resolve(res.rows);
+    //   });
+    // });
   }
 
   getTasks() {

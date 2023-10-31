@@ -1,7 +1,19 @@
-import { Controller, Get, HttpStatus, HttpCode, Res } from '@nestjs/common';
-import { AppService } from './app.service';
 import { Response, Request } from 'express';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  HttpCode,
+  Res,
+  UseGuards,
+  // SetMetadata,
+} from '@nestjs/common';
 
+import { AppService } from './app.service';
+import { ApikeyGuard } from './auth/guards/apikey.guard';
+import { Public } from './auth/decorators/public.decorator';
+
+@UseGuards(ApikeyGuard)
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
@@ -16,11 +28,16 @@ export class AppController {
     return this.appService.getTasks();
   }
 
+  // @SetMetadata('isPublic', true)
+  @Public()
   @Get('envs')
   getEnvironments() {
     return this.appService.getEnvs();
   }
 
+  // @UseGuards(ApikeyGuard)
+  // @SetMetadata('isPublic', true)
+  @Public()
   @Get('new')
   newPlace(): string {
     const message: string =

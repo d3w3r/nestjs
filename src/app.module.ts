@@ -15,6 +15,7 @@ import { BrandsModule } from './brands/brands.module';
 import { Todo } from './common/entities/todos.entity';
 import { DatabaseModule } from './database/database.module';
 import { environments } from './environments';
+import { AuthModule } from './auth/auth.module';
 import config from './config';
 
 @Module({
@@ -32,7 +33,7 @@ import config from './config';
       load: [config],
       isGlobal: true,
       validationSchema: Joi.object({
-        X_API_KEY: Joi.number().required(),
+        X_API_KEY: Joi.string().required(),
         POSTGRES_DB: Joi.string().required(),
         POSTGRES_USER: Joi.string().required(),
         POSTGRES_PASSWORD: Joi.string().required(),
@@ -40,6 +41,7 @@ import config from './config';
         POSTGRES_PORT: Joi.number().required(),
       }),
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
