@@ -1,18 +1,19 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { FindManyOptions, Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
-import { Order } from './../../orders/entities/orders.entity';
-import { User } from './../entities/users.entity';
-import { Customer } from './../../customers/entities/customers.entity';
-import { CustomersService } from './../../customers/services/customers.service';
 import {
-  CreateUserDto,
-  UpdateUserDto,
   PatchUserDto,
-  ReviewUserDto,
+  UpdateUserDto,
+  // CreateUserDto,
+  // ReviewUserDto,
 } from './../dtos/users.dto';
-import { ProductsService } from './../../products/services/products.service';
+import { User } from './../entities/users.entity';
+import { CustomersService } from './../../customers/services/customers.service';
+// import { ProductsService } from './../../products/services/products.service';
+// import { Order } from './../../orders/entities/orders.entity';
+// import { Customer } from './../../customers/entities/customers.entity';
 
 @Injectable()
 export class UsersService {
@@ -68,6 +69,9 @@ export class UsersService {
 
     payload.customer = customer;
 
+    const hashPass = await bcrypt.hash(customer.fullname, 10);
+    payload.password = hashPass;
+
     const customerCreated = this.userRepo.create(payload);
 
     return this.userRepo.save(customerCreated);
@@ -118,6 +122,9 @@ export class UsersService {
     await this.userRepo.delete(id);
 
     return user;
+  }
+  findByEmail(nickname: string) {
+    return this.userRepo.findOne({ where: { nickname } });
   }
 
   // getOrderByUser(id: number) {

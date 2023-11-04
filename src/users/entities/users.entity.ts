@@ -1,22 +1,23 @@
 import {
+  Length,
+  IsEmail,
   IsString,
   IsNumber,
   IsPositive,
   IsNotEmpty,
-  IsEmail,
   IsStrongPassword,
-  Length,
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
   Entity,
-  PrimaryGeneratedColumn,
-  OneToMany,
   OneToOne,
   JoinColumn,
   ManyToMany,
+  PrimaryGeneratedColumn,
+  // OneToMany,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 
 import { Customer } from './../../customers/entities/customers.entity';
 import { Order } from './../../orders/entities/orders.entity';
@@ -37,6 +38,7 @@ export class User {
   @Column({ type: 'varchar', length: 255 })
   readonly nickname: string;
 
+  // @Exclude()
   @ApiProperty({ description: 'Password for the user' })
   @IsNotEmpty()
   @IsString()
