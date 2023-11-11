@@ -69,7 +69,7 @@ export class UsersService {
 
     payload.customer = customer;
 
-    const hashPass = await bcrypt.hash(customer.fullname, 10);
+    const hashPass = await bcrypt.hash(payload.password, 10);
     payload.password = hashPass;
 
     const customerCreated = this.userRepo.create(payload);
