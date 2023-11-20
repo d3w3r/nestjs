@@ -38,3 +38,4 @@ lerna-debug.log*
 *.env
 /postgres_data/
 /mysql_data/
+mongo_data/

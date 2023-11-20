@@ -10,8 +10,10 @@ import {
   Patch,
   ParseIntPipe,
   ParseBoolPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 import { ProductsService } from './../services/products.service';
 // import { ParseIntPipe } from '../../common/parse-int/parse-int.pipe';
@@ -21,6 +23,7 @@ import {
   ModifyProductDto,
 } from './../dtos/products.dto';
 
+@UseGuards(AuthGuard('jwt'))
 @ApiTags('Products')
 @Controller('products')
 export class ProductsController {
