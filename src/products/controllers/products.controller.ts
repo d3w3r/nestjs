@@ -13,22 +13,29 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
+// import { AuthGuard } from '@nestjs/passport';
 
 import { ProductsService } from './../services/products.service';
-// import { ParseIntPipe } from '../../common/parse-int/parse-int.pipe';
+import { JwtAuthGuard } from './../../auth/guards/jwt-auth.guard';
+import { RoleAuthGuard } from './../../auth/guards/role-auth.guard';
+import { Public } from './../../auth/decorators/public.decorator';
+import { Roles } from './../../auth/decorators/roles.decorator';
+import { Role } from './../../auth/models/roles.model';
 import {
   CreateProductDto,
   UpdateProductDto,
   ModifyProductDto,
 } from './../dtos/products.dto';
 
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard, RoleAuthGuard)
 @ApiTags('Products')
 @Controller('products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
+  @Roles(Role.CUSTOMER)
+  @Public()
   @Get()
   getProducts(
     @Query('brand') brand: string,
@@ -41,6 +48,7 @@ export class ProductsController {
     return this.productsService.findAll(verbose, limit, offset, max, min);
   }
 
+  @Public()
   @Get(':id')
   getProduct(
     @Param('id', ParseIntPipe) id: number,
